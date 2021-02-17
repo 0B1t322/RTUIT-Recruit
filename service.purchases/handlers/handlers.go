@@ -7,7 +7,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchases"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 	"github.com/gorilla/mux"
 )
 
@@ -27,8 +27,8 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	
-	p, err := purchases.Get(id)
-	if err == purchases.ErrNotFound {
+	p, err := purchase.Get(id)
+	if err == purchase.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
@@ -53,7 +53,7 @@ func Get(w http.ResponseWriter, r *http.Request) {
 func Add(w http.ResponseWriter, r *http.Request) {
 	d := json.NewDecoder(r.Body)
 
-	p := &purchases.Purchase{}
+	p := &purchase.Purchase{}
 
 	if err := d.Decode(p); err != nil {
 		logAndWriteAboutInternalError(w, err, "Add")
@@ -61,7 +61,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 	}
 
 	p.BuyDate = time.Now()
-	if err := purchases.Create(p); err != nil {
+	if err := purchase.Create(p); err != nil {
 		logAndWriteAboutInternalError(w, err, "Add")
 		return
 	}
@@ -88,8 +88,8 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	
-	p, err := purchases.Get(id)
-	if err == purchases.ErrNotFound {
+	p, err := purchase.Get(id)
+	if err == purchase.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {

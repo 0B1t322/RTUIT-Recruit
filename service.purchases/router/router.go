@@ -10,13 +10,13 @@ func New() *mux.Router {
 
 	r.HandleFunc("/purchases/{id:[0-9]+}", handlers.Get).Methods("GET")
 
-	r.HandleFunc("/purchases", handlers.GetAll).Methods("GET")
+	// r.HandleFunc("/purchases", handlers.GetAll).Methods("GET")
 
-	r.HandleFunc("/purchases/{id:[0-9]+}", handlers.Add).Methods("POST")
+	r.HandleFunc("/purchases/", handlers.Add).Methods("POST")
 
 	r.HandleFunc("/purchases/{id:[0-9]+}", handlers.Delete).Methods("DELETE")
 
-	r.HandleFunc("/purchases/{id:[0-9]+}", handlers.Update).Methods("PUT")
+	// r.HandleFunc("/purchases/{id:[0-9]+}", handlers.Update).Methods("PUT")
 
 	return r
 }

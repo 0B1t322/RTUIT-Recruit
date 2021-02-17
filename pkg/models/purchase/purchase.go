@@ -19,6 +19,7 @@ func init() {
 
 type Purchase struct {
 	gorm.Model
+	UID			string		
 	BuyDate		time.Time 	`json:"buy_date"`
 	ProductName	string		`json:"product_name"`
 	Cost		float64		`json:"cost"`
@@ -30,6 +31,22 @@ func Get(ID string) (*Purchase, error) {
 		return nil, ErrNotFound
 	} else if err != nil {
 		return nil, err
+	}
+
+	return p, nil
+}
+
+func GetAll(UID string) ([]*Purchase, error)  {
+	p := []*Purchase{}
+
+	err := db.DB.Find(&p, "UID = ?", UID).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	if len(p) == 0 {
+		return nil, ErrNotFound
 	}
 
 	return p, nil

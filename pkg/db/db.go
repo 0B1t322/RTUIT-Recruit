@@ -8,7 +8,7 @@ import (
 var DB *gorm.DB
 
 func init() {
-	if _DB, err := db.DBManger.OpenDataBase("recruit"); err != nil {
+	if _DB, err := db.DBManger.OpenDataBase("recruit?parseTime=true"); err != nil {
 		panic(err)
 	} else {
 		DB = _DB

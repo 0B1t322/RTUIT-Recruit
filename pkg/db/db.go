@@ -6,11 +6,13 @@ import (
 	"gorm.io/gorm"
 )
 
+const DBName = "recruit?parseTime=true"
+
 var DB *gorm.DB
 
 func init() {
-	log.Info("recruit?parseTime=true")
-	if _DB, err := db.DBManger.OpenDataBase("recruit?parseTime=true"); err != nil {
+	log.Info(DBName)
+	if _DB, err := db.DBManger.OpenDataBase(DBName); err != nil {
 		panic(err)
 	} else {
 		DB = _DB

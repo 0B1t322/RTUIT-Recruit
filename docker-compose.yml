@@ -1,0 +1,28 @@
+services:
+  db:
+    image: mysql
+    container_name: db
+    restart: always
+    ports: 
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+    volumes:
+      - "./db/scripts/recruit.sql:/docker-entrypoint-initdb.d/1.sql"
+    networks: 
+      - database
+  service.purchases:
+    container_name: service.purchases
+    image: 0b1t322/service.purchases
+    ports: 
+      - 8081:8081
+    depends_on: 
+      - db
+    networks: 
+      - database
+
+networks: 
+  database:
+    driver: "bridge"

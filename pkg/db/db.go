@@ -6,20 +6,18 @@ import (
 	"time"
 
 	"github.com/0B1t322/distanceLearningWebSite/pkg/db"
-	"gorm.io/gorm"
 )
 
-const dbName = "recruit?parseTime=true"
+const DBName = "recruit?parseTime=true"
 
-var DB *gorm.DB
+var DBManager *db.Manager
 
 func init() {
-	m := db.NewManager("root", "root", "db:3306", 20*time.Second)
+	DBManager = db.NewManager("root", "root", "db:3306", 20*time.Second)
 
-	if _DB, err := m.OpenDataBase(dbName); err != nil {
+	DB, err := DBManager.OpenDataBase(DBName)
+	if err != nil {
 		panic(err)
-	} else {
-		DB = _DB
 	}
 
 	// Mirgate models

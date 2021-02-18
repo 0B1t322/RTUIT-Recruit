@@ -1,15 +1,27 @@
 package handlers
 
 import (
+	"gorm.io/gorm"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
+	pc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/purchase"
 	"encoding/json"
 	"net/http"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 	"github.com/gorilla/mux"
 )
+
+type PurchaseHandler struct {
+	c *pc.PurchaseController
+}
+
+func New(db *gorm.DB) *PurchaseHandler {
+	return &PurchaseHandler{
+		c: pc.New(db),
+	}
+}
 
 func logAndWriteAboutInternalError(w http.ResponseWriter, err error, m string) {
 	log.WithFields(
@@ -23,12 +35,12 @@ func logAndWriteAboutInternalError(w http.ResponseWriter, err error, m string) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
-func Get(w http.ResponseWriter, r *http.Request) {
+func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	
-	p, err := purchase.Get(id)
-	if err == purchase.ErrNotFound {
+	p, err := ph.c.Get(id)
+	if err == pc.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
@@ -46,12 +58,12 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func GetAll(w http.ResponseWriter, r *http.Request) {
+func (ph* PurchaseHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid := vars["uid"]
 
-	ps, err := purchase.GetAll(uid)
-	if err == purchase.ErrNotFound {
+	ps, err := ph.c.GetAll(uid)
+	if err == pc.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
@@ -69,7 +81,7 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func Add(w http.ResponseWriter, r *http.Request) {
+func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid := vars["uid"]
 
@@ -84,7 +96,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 
 	p.UID = uid
 	p.BuyDate = time.Now()
-	if err := purchase.Create(p); err != nil {
+	if err := ph.c.Create(p); err != nil {
 		logAndWriteAboutInternalError(w, err, "Add")
 		return
 	}
@@ -107,12 +119,12 @@ func Add(w http.ResponseWriter, r *http.Request) {
 // 	} 
 // }
 
-func Delete(w http.ResponseWriter, r *http.Request) {
+func (ph *PurchaseHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
 	
-	p, err := purchase.Get(id)
-	if err == purchase.ErrNotFound {
+	p, err := ph.c.Get(id)
+	if err == pc.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
@@ -120,7 +132,7 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := p.Delete(); err != nil {
+	if err := ph.c.Delete(p); err != nil {
 		logAndWriteAboutInternalError(w, err, "Delete")
 		return
 	}

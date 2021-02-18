@@ -46,11 +46,33 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-// func GetAll(w http.ResponseWriter, r *http.Request) {
-	
-// }
+func GetAll(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	uid := vars["uid"]
+
+	ps, err := purchase.GetAll(uid)
+	if err == purchase.ErrNotFound {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	} else if err != nil {
+		logAndWriteAboutInternalError(w, err, "GetAll")
+		return
+	}
+
+	data, err := json.Marshal(ps)
+	if err !=  nil {
+		logAndWriteAboutInternalError(w,err,"GetAll")
+		return
+	}
+
+	w.Write(data)
+	w.WriteHeader(http.StatusOK)
+}
 
 func Add(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	uid := vars["uid"]
+
 	d := json.NewDecoder(r.Body)
 
 	p := &purchase.Purchase{}
@@ -60,6 +82,7 @@ func Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	p.UID = uid
 	p.BuyDate = time.Now()
 	if err := purchase.Create(p); err != nil {
 		logAndWriteAboutInternalError(w, err, "Add")

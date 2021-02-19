@@ -15,7 +15,7 @@ services:
       - database
   service.purchases:
     container_name: service.purchases
-    image: 0b1t322/service.purchases
+    image: 0b1t322/service.purchases:level_1
     ports: 
       - 8081:8081
     depends_on: 

@@ -7,11 +7,12 @@ import (
 	"gorm.io/gorm"
 )
 
+//New return a new router
 func New(DB *gorm.DB) *mux.Router {
 	r := mux.NewRouter()
 	ph := handlers.New(DB)
 
-	r.HandleFunc("/purchases/{id:[0-9]+}", ph.Get).Methods("GET")
+	r.HandleFunc("/purchases/{uid:[0-9]+}/{id:[0-9]+}", ph.Get).Methods("GET")
 
 	r.HandleFunc("/purchases/{uid:[0-9]+}", ph.GetAll).Methods("GET")
 
@@ -22,5 +23,6 @@ func New(DB *gorm.DB) *mux.Router {
 	// r.HandleFunc("/purchases/{id:[0-9]+}", handlers.Update).Methods("PUT")
 
 	r.Use(middlewares.ContentTypeJSONMiddleware)
+
 	return r
 }

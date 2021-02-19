@@ -13,10 +13,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// PurchaseHandler present a struct with controller
 type PurchaseHandler struct {
 	c *pc.PurchaseController
 }
 
+// New .....
 func New(db *gorm.DB) *PurchaseHandler {
 	return &PurchaseHandler{
 		c: pc.New(db),
@@ -35,9 +37,15 @@ func logAndWriteAboutInternalError(w http.ResponseWriter, err error, m string) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
+// Get return a json purchase according to id in path
+//
+// if not find return 404 code and empy body
+// 
+// Answer example:
 func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
+	uid := vars["uid"]
 	
 	p, err := ph.c.Get(id)
 	if err == pc.ErrNotFound {
@@ -45,6 +53,11 @@ func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	} else if err != nil {
 		logAndWriteAboutInternalError(w, err, "Get")
+		return
+	}
+
+	if p.UID != uid {
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
@@ -57,7 +70,10 @@ func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 	w.WriteHeader(http.StatusOK)
 }
-
+// GetAll return a json mass of purchases for uid in path
+// 
+// if not find return code 404
+// Success return code 200
 func (ph* PurchaseHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid := vars["uid"]
@@ -81,6 +97,15 @@ func (ph* PurchaseHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
+// Add to db a purchases with uid in path
+// 
+// if add return code 201 and uint id of added purchase
+// 
+// body example:
+// 	{
+// 		"product_name": "product_1",
+// 		"cost": 213,
+// 	}
 func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid := vars["uid"]
@@ -102,6 +127,15 @@ func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+	ID := p.ID
+
+	data, err := json.Marshal(ID)
+	if err != nil {
+		logAndWriteAboutInternalError(w, err, "Add")
+		return
+	}
+
+	w.Write(data)
 }
 
 // func Update(w http.ResponseWriter, r *http.Request) {
@@ -119,16 +153,27 @@ func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 // 	} 
 // }
 
+// Delete a purchase with id in path
+// 
+// if not found purchase with this id return code 404
+// 
+// If success retorn code 200
 func (ph *PurchaseHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	
+	uid := vars["uid"]
+
 	p, err := ph.c.Get(id)
 	if err == pc.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
 		logAndWriteAboutInternalError(w, err, "Delete")
+		return
+	}
+
+	if p.UID != uid {
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 

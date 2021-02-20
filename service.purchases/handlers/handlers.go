@@ -39,9 +39,19 @@ func logAndWriteAboutInternalError(w http.ResponseWriter, err error, m string) {
 
 // Get return a json purchase according to id in path
 //
-// if not find return 404 code and empy body
+// if not find purchase fot uid return 404 code and empy body
 // 
-// Answer example:
+// 	Answer example:
+// {
+// 		"ID": 1,
+// 		"CreatedAt": "2021-02-18T19:51:42Z",
+// 		"UpdatedAt": "2021-02-18T19:51:42Z",
+// 		"DeletedAt": null,
+// 		"UID": "1",
+// 		"buy_date": "2021-02-18T19:51:41.999Z",
+// 		"product_name": "prodcut_1",
+// 		"cost": 123.2234567
+// 	}
 func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
@@ -72,8 +82,9 @@ func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 }
 // GetAll return a json mass of purchases for uid in path
 // 
-// if not find return code 404
+// if not find purchase for uid return code 404
 // Success return code 200
+// 
 func (ph* PurchaseHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid := vars["uid"]

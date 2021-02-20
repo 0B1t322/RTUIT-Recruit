@@ -165,9 +165,9 @@ func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 // }
 
 // Delete a purchase with id in path
-// 
+
 // if not found purchase with this id return code 404
-// 
+
 // If success retorn code 200
 func (ph *PurchaseHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

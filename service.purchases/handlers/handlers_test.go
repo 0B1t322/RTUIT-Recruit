@@ -126,6 +126,73 @@ func TestFunc_Get(t *testing.T) {
 	t.Log(w.Body.String())
 }
 
+func TestFunc_Get_NotFound(t *testing.T) {
+	req := httptest.NewRequest("GET", fmt.Sprintf("/purchases/10/12"), nil)
+	w := httptest.NewRecorder()
+
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Log(w.Code)
+		t.FailNow()
+	}
+
+	add := func() (uint, func()) {
+		data, err := json.Marshal(struct{
+			ProductName 	string `json:"product_name"`
+			Cost			float64 `json:"cost"`
+		} {
+			"product_2",
+			229,
+		})
+		if err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+		req := httptest.NewRequest("POST", "/purchases/2", bytes.NewReader(data))
+		w := httptest.NewRecorder()
+
+		r.ServeHTTP(w,req)
+
+		if w.Code != http.StatusCreated {
+			t.Log(w.Code)
+			t.FailNow()
+		}
+		var ID uint
+		err = json.Unmarshal(w.Body.Bytes(), &ID)
+		if err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+
+		t.Logf("Added with id: %v\n", ID)
+
+		return ID, (func() {
+			req := httptest.NewRequest("DELETE", "/purchases/2/" + fmt.Sprint(ID), nil)
+			w := httptest.NewRecorder()
+			r.ServeHTTP(w, req)
+
+			if w.Code != http.StatusOK {
+				t.Log(w.Code)
+				t.FailNow()
+			}
+		})
+	}
+
+	id, del := add()
+	defer del()
+
+	req = httptest.NewRequest("GET", fmt.Sprintf("/purchases/10/" + fmt.Sprint(id)), nil)
+	w = httptest.NewRecorder()
+
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusNotFound {
+		t.Log(w.Code)
+		t.FailNow()
+	}
+}
+
 func TestFunc_GetAll(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		data, err := json.Marshal(struct{

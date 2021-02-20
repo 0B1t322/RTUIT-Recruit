@@ -2,19 +2,26 @@ package db
 
 import (
 	log "github.com/sirupsen/logrus"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
+	"time"
+
 	"github.com/0B1t322/distanceLearningWebSite/pkg/db"
-	"gorm.io/gorm"
 )
 
-const dbName = "recruit?parseTime=true"
+const DBName = "recruit?parseTime=true"
 
-var DB *gorm.DB
+var DBManager *db.Manager
 
 func init() {
-	log.Info(dbName)
-	if _DB, err := db.DBManger.OpenDataBase(dbName); err != nil {
+	DBManager = db.NewManager("root", "root", "db:3306", 20*time.Second)
+
+	DB, err := DBManager.OpenDataBase(DBName)
+	if err != nil {
 		panic(err)
-	} else {
-		DB = _DB
+	}
+
+	// Mirgate models
+	if err := purchase.AutoMigrate(DB); err != nil {
+		log.Error(err)		
 	}
 }

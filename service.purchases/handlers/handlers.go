@@ -1,15 +1,29 @@
 package handlers
 
 import (
+	"gorm.io/gorm"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
+	pc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/purchase"
 	"encoding/json"
 	"net/http"
 	"time"
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 	"github.com/gorilla/mux"
 )
+
+// PurchaseHandler present a struct with controller
+type PurchaseHandler struct {
+	c *pc.PurchaseController
+}
+
+// New .....
+func New(db *gorm.DB) *PurchaseHandler {
+	return &PurchaseHandler{
+		c: pc.New(db),
+	}
+}
 
 func logAndWriteAboutInternalError(w http.ResponseWriter, err error, m string) {
 	log.WithFields(
@@ -23,16 +37,37 @@ func logAndWriteAboutInternalError(w http.ResponseWriter, err error, m string) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
-func Get(w http.ResponseWriter, r *http.Request) {
+// Get return a json purchase according to id in path
+//
+// if not find purchase fot uid return 404 code and empy body
+// 
+// 	Answer example:
+// {
+// 		"ID": 1,
+// 		"CreatedAt": "2021-02-18T19:51:42Z",
+// 		"UpdatedAt": "2021-02-18T19:51:42Z",
+// 		"DeletedAt": null,
+// 		"UID": "1",
+// 		"buy_date": "2021-02-18T19:51:41.999Z",
+// 		"product_name": "prodcut_1",
+// 		"cost": 123.2234567
+// 	}
+func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
+	uid := vars["uid"]
 	
-	p, err := purchase.Get(id)
-	if err == purchase.ErrNotFound {
+	p, err := ph.c.Get(id)
+	if err == pc.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
 		logAndWriteAboutInternalError(w, err, "Get")
+		return
+	}
+
+	if p.UID != uid {
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
@@ -45,13 +80,17 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 	w.WriteHeader(http.StatusOK)
 }
-
-func GetAll(w http.ResponseWriter, r *http.Request) {
+// GetAll return a json mass of purchases for uid in path
+// 
+// if not find purchase for uid return code 404
+// Success return code 200
+// 
+func (ph* PurchaseHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid := vars["uid"]
 
-	ps, err := purchase.GetAll(uid)
-	if err == purchase.ErrNotFound {
+	ps, err := ph.c.GetAll(uid)
+	if err == pc.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
@@ -69,7 +108,16 @@ func GetAll(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func Add(w http.ResponseWriter, r *http.Request) {
+// Add to db a purchases with uid in path
+// 
+// if add return code 201 and uint id of added purchase
+// 
+// body example:
+// 	{
+// 		"product_name": "product_1",
+// 		"cost": 213,
+// 	}
+func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	uid := vars["uid"]
 
@@ -84,12 +132,21 @@ func Add(w http.ResponseWriter, r *http.Request) {
 
 	p.UID = uid
 	p.BuyDate = time.Now()
-	if err := purchase.Create(p); err != nil {
+	if err := ph.c.Create(p); err != nil {
 		logAndWriteAboutInternalError(w, err, "Add")
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
+	ID := p.ID
+
+	data, err := json.Marshal(ID)
+	if err != nil {
+		logAndWriteAboutInternalError(w, err, "Add")
+		return
+	}
+
+	w.Write(data)
 }
 
 // func Update(w http.ResponseWriter, r *http.Request) {
@@ -107,12 +164,18 @@ func Add(w http.ResponseWriter, r *http.Request) {
 // 	} 
 // }
 
-func Delete(w http.ResponseWriter, r *http.Request) {
+// Delete a purchase with id in path
+
+// if not found purchase with this id return code 404
+
+// If success retorn code 200
+func (ph *PurchaseHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	
-	p, err := purchase.Get(id)
-	if err == purchase.ErrNotFound {
+	uid := vars["uid"]
+
+	p, err := ph.c.Get(id)
+	if err == pc.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	} else if err != nil {
@@ -120,7 +183,12 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := p.Delete(); err != nil {
+	if p.UID != uid {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	if err := ph.c.Delete(p); err != nil {
 		logAndWriteAboutInternalError(w, err, "Delete")
 		return
 	}

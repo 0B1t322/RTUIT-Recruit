@@ -7,13 +7,12 @@ import (
 )
 
 type Purchase struct {
-	gorm.Model
-	UID			string
+	ID			uint			`gorm:"primarykey"`
 
-	// ShopID show from what shop was a purchase 
-	ShopID		string			`json:"-"`
+	UID			uint
 
-	ShopInfo	shop.ShopInfo	`json:"shop_info"`
+	ShopID		uint			`json:"-"`
+	Shop		shop.Shop		`json:"shop" gorm:"foreignKey:ShopID"`
 
 	BuyDate		time.Time 		`json:"buy_date"`
 	ProductName	string			`json:"product_name"`

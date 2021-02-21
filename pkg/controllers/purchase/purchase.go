@@ -29,6 +29,10 @@ func (pc *PurchaseController) Get(ID uint) (*m.Purchase, error) {
 		return nil, err
 	}
 
+	if err := pc.db.Model(p).Association("Product").Find(&p.Product); err != nil {
+		return nil, err
+	}
+
 	return p, nil
 }
 
@@ -49,7 +53,9 @@ func (pc *PurchaseController) GetAll(UID uint) ([]*m.Purchase, error)  {
 }
 
 func (pc *PurchaseController) Create(p *m.Purchase) error {
-	if err := pc.db.Create(p).Error; err != nil && shopNotFound(err) {
+	if err := pc.db.Create(p).Error; err != nil && productNotFound(err) {
+		return ErrInvalidProductID
+	} else if err != nil && shopNotFound(err) {
 		return ErrInvalidShopID
 	} else if err != nil {
 		return err
@@ -58,6 +64,7 @@ func (pc *PurchaseController) Create(p *m.Purchase) error {
 	return nil
 }
 
+// TODO  maybe delete this because it's not to be updated
 func (pc *PurchaseController) Update(p *m.Purchase) error {
 	if err := pc.db.Updates(p).Error; err != nil {
 		return err
@@ -74,6 +81,12 @@ func (pc *PurchaseController) Delete(p *m.Purchase) error {
 	return nil
 }
 
+// Два костыля
+
 func shopNotFound(err error) bool {
-	return strings.Contains(err.Error(), "Error 1452")
+	return strings.Contains(err.Error(), "`shops`")
+}
+
+func productNotFound(err error) bool {
+	return strings.Contains(err.Error(), "`products`")
 }

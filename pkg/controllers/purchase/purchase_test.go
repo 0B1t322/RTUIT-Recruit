@@ -1,6 +1,7 @@
 package purchase_test
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
 
@@ -28,13 +29,12 @@ var pc *c.PurchaseController
 
 func TestFunc_Get(t *testing.T) {
 	// TODO  create shop
+	// TODO  create product
 	p := &purchase.Purchase{
 		UID: 1,
-		ProductName: "Computer",
-		Category: "Tech",
+		ProductID: 1,
 		ShopID: 3,
 		BuyDate: time.Now(),
-		Cost: 89000,
 	}
 	if err := pc.Create(p); err != nil {
 		t.Log(err)
@@ -51,6 +51,13 @@ func TestFunc_Get(t *testing.T) {
 
 	t.Log(getP)
 	t.Log(getP.Shop)
+	t.Log(getP.Product)
+	data, err := json.Marshal(getP)
+	if err  != nil {
+		t.Log(err)
+	}
+
+	t.Log(string(data))
 }
 
 func TestFunc_Get_NotFound(t *testing.T) {
@@ -66,11 +73,9 @@ func TestFunc_GetAll(t *testing.T) {
 	for i := 0; i  < 10; i++ {
 		p := &purchase.Purchase{
 			UID: 1,
-			ProductName: "Computer",
-			Category: "Tech",
 			ShopID: 3,
 			BuyDate: time.Now(),
-			Cost: 89000 + float64(i),
+			ProductID: 1,
 		}
 
 		if err := pc.Create(p); err != nil {

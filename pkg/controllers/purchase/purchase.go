@@ -6,6 +6,7 @@ import (
 	m "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 	"gorm.io/gorm"
 )
+// TODO base controller struct
 
 type PurchaseController struct {
 	db *gorm.DB

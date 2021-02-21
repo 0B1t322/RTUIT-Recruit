@@ -1,6 +1,8 @@
 package purchase
 
 import (
+	"strings"
+
 	m "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 	"gorm.io/gorm"
 )
@@ -15,7 +17,7 @@ func New(db *gorm.DB) *PurchaseController {
 	return pc
 }
 
-func (pc *PurchaseController) Get(ID string) (*m.Purchase, error) {
+func (pc *PurchaseController) Get(ID uint) (*m.Purchase, error) {
 	p := &m.Purchase{}	
 	if err := pc.db.First(p, "ID = ?", ID).Error; err == gorm.ErrRecordNotFound {
 		return nil, ErrNotFound
@@ -23,10 +25,14 @@ func (pc *PurchaseController) Get(ID string) (*m.Purchase, error) {
 		return nil, err
 	}
 
+	if err := pc.db.Model(p).Association("Shop").Find(&p.Shop); err != nil {
+		return nil, err
+	}
+
 	return p, nil
 }
 
-func (pc *PurchaseController) GetAll(UID string) ([]*m.Purchase, error)  {
+func (pc *PurchaseController) GetAll(UID uint) ([]*m.Purchase, error)  {
 	p := []*m.Purchase{}
 
 	err := pc.db.Find(&p, "UID = ?", UID).Error
@@ -43,7 +49,9 @@ func (pc *PurchaseController) GetAll(UID string) ([]*m.Purchase, error)  {
 }
 
 func (pc *PurchaseController) Create(p *m.Purchase) error {
-	if err := pc.db.Create(p).Error; err != nil {
+	if err := pc.db.Create(p).Error; err != nil && shopNotFound(err) {
+		return ErrInvalidShopID
+	} else if err != nil {
 		return err
 	}
 
@@ -64,4 +72,8 @@ func (pc *PurchaseController) Delete(p *m.Purchase) error {
 	}
 
 	return nil
+}
+
+func shopNotFound(err error) bool {
+	return strings.Contains(err.Error(), "Error 1452")
 }

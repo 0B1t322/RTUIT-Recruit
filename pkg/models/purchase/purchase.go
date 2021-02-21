@@ -1,8 +1,10 @@
 package purchase
 
 import (
-	"github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
 	"time"
+
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
 	"gorm.io/gorm"
 )
 
@@ -15,11 +17,9 @@ type Purchase struct {
 	Shop		shop.Shop		`json:"shop" gorm:"foreignKey:ShopID"`
 
 	BuyDate		time.Time 		`json:"buy_date"`
-	ProductName	string			`json:"product_name"`
-	Cost		float64			`json:"cost"`
 
-	// Category can be set by a user or by a shop
-	Category	string			`json:"category"`
+	ProductID	uint			`json:"-"`
+	Product		product.Product	`json:"product" gorm:"foreignKey:ProductID"`
 
 	// Payment can be cash/card
 	Payment		string			`json:"payment"`

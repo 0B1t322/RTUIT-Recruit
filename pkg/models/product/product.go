@@ -1,4 +1,4 @@
-package products
+package product
 
 import "gorm.io/gorm"
 
@@ -7,6 +7,7 @@ type Product struct {
 	Name 			string	`json:"name"`
 	Desccription	string	`json:"description"`
 	Cost			float64	`json:"cost"`
+	Category		string	`json:"category"`
 }
 
 func AutoMigrate(db *gorm.DB) error {

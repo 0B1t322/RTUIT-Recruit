@@ -60,3 +60,5 @@ func (sc *ShopController) Create(s *m.Shop) error {
 func (sc *ShopController) Update(s *m.Shop) error {
 	return  sc.Controller.Update(s)
 }
+
+// TODO methods to update count

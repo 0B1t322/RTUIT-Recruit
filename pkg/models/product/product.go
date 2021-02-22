@@ -2,6 +2,7 @@ package product
 
 import "gorm.io/gorm"
 
+
 type Product struct {
 	ID				uint	`gorm:"primarykey"`
 	Name 			string	`json:"name"`

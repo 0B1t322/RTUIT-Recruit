@@ -10,10 +10,6 @@ func New(db *gorm.DB) *Controller {
 	return &Controller{db}
 }
 
-func (c *Controller) SetDB(db *gorm.DB) {
-	c.db = db
-}
-
 func (c *Controller) Get(ID uint) (interface{},  error) {
 	var i interface{}
 

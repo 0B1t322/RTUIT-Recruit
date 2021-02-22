@@ -6,6 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// TODO gorm tags for product and counts
+
 type Shop struct {
 	ID			uint				`gorm:"primarykey"`
 	Name		string 				`json:"name"`
@@ -13,9 +15,9 @@ type Shop struct {
 	PhoneNubmer	string				`json:"phone_number"`
 
 	// here all existing  products
-	Products	[]product.Product	`json:"products"`
+	Products	[]product.Product	`json:"products" gorm:"-"`
 	// here product count
-	Counts		[]count.Count		`json:"counts"`
+	Counts		[]count.Count		`json:"counts" gorm:"-"`
 }
 
 func AutoMigrate(db *gorm.DB) error {

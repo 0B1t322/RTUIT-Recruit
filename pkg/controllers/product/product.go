@@ -40,3 +40,11 @@ func (pc *ProductController) Update(p *model.Product) error {
 
 	return nil
 }
+
+func (pc *ProductController) Delete(p *model.Product) error {
+	if err := pc.db.Delete(p).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

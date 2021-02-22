@@ -6,6 +6,10 @@ type Controller struct {
 	db *gorm.DB
 }
 
+func New(db *gorm.DB) *Controller {
+	return &Controller{db}
+}
+
 func (c *Controller) SetDB(db *gorm.DB) {
 	c.db = db
 }

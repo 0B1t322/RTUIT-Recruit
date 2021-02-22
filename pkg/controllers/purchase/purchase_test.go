@@ -5,7 +5,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
 
 	c "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/purchase"
 	"github.com/0B1t322/distanceLearningWebSite/pkg/db"
@@ -32,7 +34,12 @@ func TestFunc_Get(t *testing.T) {
 	// TODO  create product
 	p := &purchase.Purchase{
 		UID: 1,
-		ProductID: 1,
+		Product: product.Product{
+			Name: "some_product",
+		},
+		Shop: shop.Shop{
+			Name: "some_shop",
+		},
 		ShopID: 3,
 		BuyDate: time.Now(),
 	}

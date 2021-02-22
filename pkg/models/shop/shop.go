@@ -11,7 +11,7 @@ import (
 //
 // If  you want to add current product just input theirs IDs  in Product
 //
-// If  want  to create some  new product input onlu product  data waithout ID
+// If  want  to create some  new product input only product  data waithout ID
 type Shop struct {
 	ID			uint				`gorm:"primarykey"`
 	Name		string 				`json:"name" gorm:"unique"`

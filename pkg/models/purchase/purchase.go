@@ -7,7 +7,11 @@ import (
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
 	"gorm.io/gorm"
 )
-
+// Purchase is  a model  of  purchase
+// if have shopID or ProductID  will search it in  DB
+// if dont find them  returns errors
+// 
+// also you can create  this  shop or magazin by input  Product or magazin obj
 type Purchase struct {
 	ID			uint			`gorm:"primarykey"`
 

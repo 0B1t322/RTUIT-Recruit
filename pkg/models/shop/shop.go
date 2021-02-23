@@ -19,21 +19,37 @@ type Shop struct {
 	// here all existing  products
 	Products	[]product.Product	`json:"products"  gorm:"many2many:shop_products;"`
 	// here product count
-	// Counts		[]count.Count		`json:"counts" gorm:"-"`
+	Count		[]ShopProducts		`json:"count" gorm:"-"`
 }
 
 
 func (s Shop) BeforeDelete(tx *gorm.DB)  error {
-	var sp []ShopProducts
-	if err := tx.Table("shop_products").Where("shop_id = ?", s.ID).Find(&sp).Error; err != nil {
-		return err
-	}
-
-	if err := tx.Delete(sp).Error; len(sp) > 0 && err != nil {
+	if err := tx.Delete(s.Count).Error; err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (s *Shop) AfterCreate(tx *gorm.DB) error {
+	for i, p := range s.Products {
+		if p.ID != 0 {
+			err := tx.First(&s.Products[i]).Error
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	if err := s.setCount(tx); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Shop) AfterFind(tx *gorm.DB) error {
+	return s.setProductAndCounts(tx)
 }
 
 func AutoMigrate(db *gorm.DB) error {
@@ -42,6 +58,61 @@ func AutoMigrate(db *gorm.DB) error {
 	}
 
 	if err :=  db.AutoMigrate(&ShopProducts{}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Shop) setProducts(tx *gorm.DB) error {
+	var ProductsID []uint
+	if err := tx.Table("shop_products").
+				Where("shop_id = ?", s.ID).
+				Select("product_id").
+				Find(&ProductsID).Error; err != nil {
+		return err
+	}
+
+	if err := tx.Model(s.Products).
+				Where(ProductsID).
+				Find(&s.Products).
+				Error; 
+	err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Shop) setCount(tx *gorm.DB) error {
+	if err := tx.Table("shop_products").
+			Where("shop_id = ?", s.ID).
+			Find(&s.Count).Error;
+	err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Shop) setProductAndCounts(tx *gorm.DB) error {
+	if err := tx.Model(s.Count).
+			Where("shop_id = ?", s.ID).
+			Find(&s.Count).Error;
+	err != nil {
+		return err
+	}
+
+	var ProductsID []uint
+	for _, c := range s.Count {
+		ProductsID = append(ProductsID, c.ProductID)
+	}
+
+	if err := tx.Model(s.Products).
+				Where(ProductsID).
+				Find(&s.Products).
+				Error;
+	err != nil {
 		return err
 	}
 

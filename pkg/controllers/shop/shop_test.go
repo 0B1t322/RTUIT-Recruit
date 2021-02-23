@@ -5,6 +5,8 @@ import (
 	"testing"
 	"time"
 
+	pc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/product"
+
 	c "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/shop"
 	p "github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
 	m "github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
@@ -29,6 +31,24 @@ func init() {
 		panic(err)
 	}
 
+	pc := pc.New(db)
+
+	pc.Create(&p.Product{
+		ID: 29,
+		Name: "phone_1",
+		Desccription: "cool phone",
+		Cost: 13000,
+		Category: "Phone",
+	})
+
+	pc.Create(&p.Product{
+		ID: 30,
+		Name: "phone_2",
+		Desccription: "coolest phone",
+		Cost: 15000,
+		Category: "Phone",
+	})
+
 }
 
 var sc *c.ShopController
@@ -39,7 +59,7 @@ func TestFunc_Create(t *testing.T) {
 		Adress:      "adress_1",
 		PhoneNubmer: "phone_1",
 		Products: []p.Product{
-			{Name: "name_4"},
+			{ID: 29},
 		},
 	}
 

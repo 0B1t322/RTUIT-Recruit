@@ -1,6 +1,7 @@
 package purchase_test
 
 import (
+	s "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/shop"
 	"encoding/json"
 	"testing"
 	"time"
@@ -25,22 +26,31 @@ func init() {
 	purchase.AutoMigrate(DB)
 
 	pc = c.New(DB)
+	sc = s.New(DB)
 }
 
 var pc *c.PurchaseController
+var sc *s.ShopController
 
 func TestFunc_Get(t *testing.T) {
-	// TODO  create shop
-	// TODO  create product
+	shopModel := &shop.Shop{
+		Name: "shop_1",
+		Adress: "adress_1",
+		PhoneNubmer: "897612334334",
+	}
+
+	if err := sc.Create(shopModel); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	defer sc.Delete(shopModel)
+
 	p := &purchase.Purchase{
 		UID: 1,
 		Product: product.Product{
 			Name: "some_product",
 		},
-		Shop: shop.Shop{
-			Name: "some_shop",
-		},
-		ShopID: 3,
+		ShopID: shopModel.ID,
 		BuyDate: time.Now(),
 	}
 	if err := pc.Create(p); err != nil {
@@ -76,13 +86,27 @@ func TestFunc_Get_NotFound(t *testing.T) {
 }
 
 func TestFunc_GetAll(t *testing.T) {
-	// TODO  create shop
+	shopModel := &shop.Shop{
+		Name: "shop_1",
+		Adress: "adress_1",
+		PhoneNubmer: "897612334334",
+	}
+
+	if err := sc.Create(shopModel); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	defer sc.Delete(shopModel)
+
+	
 	for i := 0; i  < 10; i++ {
 		p := &purchase.Purchase{
 			UID: 1,
-			ShopID: 3,
+			ShopID: shopModel.ID,
+			Product: product.Product{
+				Name: "Phone",
+			},
 			BuyDate: time.Now(),
-			ProductID: 1,
 		}
 
 		if err := pc.Create(p); err != nil {

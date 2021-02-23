@@ -91,6 +91,14 @@ func TestFunc_Get(t *testing.T) {
 	t.Log(string(data))
 }
 
+func TestFunc_Get_NotFound(t *testing.T) {
+	_, err := sc.Get(1)
+	if err != c.ErrNotFound {
+		t.Log(err)
+		t.FailNow()
+	}
+}
+
 func TestFunc_Update(t *testing.T) {
 	s := &m.Shop{
 		Name:        "shop_1",
@@ -111,8 +119,6 @@ func TestFunc_Update(t *testing.T) {
 			t.FailNow()
 		}
 	}()
-	
-	sc.AddCount(s.ID, 29, 10)
 
 	if err := sc.Update(s); err !=  nil {
 		t.Log(err)
@@ -122,24 +128,111 @@ func TestFunc_Update(t *testing.T) {
 	t.Log(string(data))
 }
 
-// func TestFunc_AddCount(t *testing.T) {
-// 	s := &m.Shop{
-// 		Name:        "shop_1",
-// 		Adress:      "adress_1",
-// 		PhoneNubmer: "phone_1",
-// 		Products: []p.Product{
-// 			{ID: 29}, {ID: 30},
-// 		},
-// 	}
-// 	if err := sc.Create(s); err != nil {
-// 		t.Log(err)
-// 		t.FailNow()
-// 	}
-// 	defer func() {
-// 		if err := sc.Delete(s);err != nil {
-// 			t.Log(err)
-// 			t.FailNow()
-// 		}
-// 	}()
+func TestFunc_AddCount(t *testing.T) {
+	s := &m.Shop{
+		Name:        "shop_1",
+		Adress:      "adress_1",
+		PhoneNubmer: "phone_1",
+		Products: []p.Product{
+			{ID: 29}, {ID: 30},
+		},
+	}
+	if err := sc.Create(s); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	defer func() {
+		if err := sc.Delete(s);err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+	}()
+	
+	if err := sc.AddCount(s.ID, 29, 10); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+}
 
-// }
+func TestFunc_AddCount_ProductNotFound(t *testing.T) {
+	s := &m.Shop{
+		Name:        "shop_1",
+		Adress:      "adress_1",
+		PhoneNubmer: "phone_1",
+		Products: []p.Product{
+			{ID: 29}, {ID: 30},
+		},
+	}
+	if err := sc.Create(s); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	defer func() {
+		if err := sc.Delete(s);err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+	}()
+	
+	if err := sc.AddCount(s.ID, 1, 10); err != c.ErrProductNotFound {
+		t.Log(err)
+		t.FailNow()
+	}
+}
+
+func TestFunc_SubCount(t *testing.T) {
+	s := &m.Shop{
+		Name:        "shop_1",
+		Adress:      "adress_1",
+		PhoneNubmer: "phone_1",
+		Products: []p.Product{
+			{ID: 29}, {ID: 30},
+		},
+	}
+	if err := sc.Create(s); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	defer func() {
+		if err := sc.Delete(s);err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+	}()
+
+	if err := sc.AddCount(s.ID, 29,1); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	if err := sc.SubCount(s.ID, 29,1); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+}
+
+func TestFunc_SubCount_ErrNegCount(t *testing.T) {
+	s := &m.Shop{
+		Name:        "shop_1",
+		Adress:      "adress_1",
+		PhoneNubmer: "phone_1",
+		Products: []p.Product{
+			{ID: 29}, {ID: 30},
+		},
+	}
+	if err := sc.Create(s); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	defer func() {
+		if err := sc.Delete(s);err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+	}()
+
+	if err := sc.SubCount(s.ID, 29,1); err != c.ErrNegCount {
+		t.Log(err)
+		t.FailNow()
+	}
+}

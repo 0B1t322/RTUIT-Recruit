@@ -39,7 +39,7 @@ func TestFunc_Create(t *testing.T) {
 		Adress:      "adress_1",
 		PhoneNubmer: "phone_1",
 		Products: []p.Product{
-			{Name: "name_3"},
+			{Name: "name_4"},
 		},
 	}
 
@@ -54,4 +54,39 @@ func TestFunc_Create(t *testing.T) {
 		t.Log(err)
 		t.FailNow()
 	}
+}
+
+func TestFunc_Get(t *testing.T) {
+	s := &m.Shop{
+		Name:        "shop_1",
+		Adress:      "adress_1",
+		PhoneNubmer: "phone_1",
+		Products: []p.Product{
+			{ID: 29}, {ID: 30},
+		},
+	}
+
+	if err := sc.Create(s); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	defer func() {
+		if err := sc.Delete(s);err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+	}()
+
+	if data, _ := json.Marshal(s); true {
+		t.Log(string(data))
+	}
+	t.Log("Get")
+	getS, err := sc.Get(s.ID)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	data, _ := json.Marshal(getS)
+	t.Log(string(data))
 }

@@ -105,12 +105,12 @@ func TestFunc_Update(t *testing.T) {
 		t.Log(err)
 		t.FailNow()
 	}
-	// defer func() {
-	// 	if err := sc.Delete(s);err != nil {
-	// 		t.Log(err)
-	// 		t.FailNow()
-	// 	}
-	// }()
+	defer func() {
+		if err := sc.Delete(s);err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+	}()
 	
 	s.Count[0].Count = 10
 

@@ -43,13 +43,13 @@ func (sc *ShopController) Create(s *m.Shop) error {
 		return err
 	}
 
-	for i, p := range s.Products {
-		if p.ID != 0 {
-			defer func() {
-				sc.db.First(&s.Products[i])
-			}()
-		}
-	}
+	// for i, p := range s.Products {
+	// 	if p.ID != 0 {
+	// 		defer func() {
+	// 			sc.db.First(&s.Products[i])
+	// 		}()
+	// 	}
+	// }
 
 	return nil
 }

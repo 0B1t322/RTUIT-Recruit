@@ -5,8 +5,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// TODO gorm tags for product and counts
-
 // Shop a model of  shop
 //
 // If  you want to add current product just input theirs IDs  in Product

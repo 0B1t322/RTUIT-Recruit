@@ -19,6 +19,7 @@ type Shop struct {
 	// here all existing  products
 	Products	[]product.Product	`json:"products"  gorm:"many2many:shop_products;"`
 	// here product count
+	// TODO maybe make map
 	Count		[]ShopProducts		`json:"count" gorm:"-"`
 }
 
@@ -114,6 +115,20 @@ func (s *Shop) setProductAndCounts(tx *gorm.DB) error {
 				Error;
 	err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (s *Shop) AfterUpdate(tx *gorm.DB) error {
+	for _, c := range s.Count {
+		if err := tx.Table("shop_products").
+					Where("shop_id = ? AND product_id = ?", s.ID, c.ProductID).
+					Update("count", c.Count).
+					Error; 
+		err != nil {
+			return err
+		}
 	}
 
 	return nil

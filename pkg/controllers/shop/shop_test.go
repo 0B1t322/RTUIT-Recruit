@@ -90,3 +90,34 @@ func TestFunc_Get(t *testing.T) {
 	data, _ := json.Marshal(getS)
 	t.Log(string(data))
 }
+
+func TestFunc_Update(t *testing.T) {
+	s := &m.Shop{
+		Name:        "shop_1",
+		Adress:      "adress_1",
+		PhoneNubmer: "phone_1",
+		Products: []p.Product{
+			{ID: 29}, {ID: 30},
+		},
+	}
+
+	if err := sc.Create(s); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	// defer func() {
+	// 	if err := sc.Delete(s);err != nil {
+	// 		t.Log(err)
+	// 		t.FailNow()
+	// 	}
+	// }()
+	
+	s.Count[0].Count = 10
+
+	if err := sc.Update(s); err !=  nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+
+}

@@ -27,6 +27,8 @@ type Purchase struct {
 
 	// Payment can be cash/card
 	Payment		string			`json:"payment"`
+
+	Count		uint			`json:"count"`
 }
 
 func AutoMigrate(db *gorm.DB) error {

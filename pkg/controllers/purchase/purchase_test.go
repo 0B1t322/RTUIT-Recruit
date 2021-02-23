@@ -43,7 +43,12 @@ func TestFunc_Get(t *testing.T) {
 		t.Log(err)
 		t.FailNow()
 	}
-	defer sc.Delete(shopModel)
+	defer func() {
+		if err := sc.Delete(shopModel); err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+	}()
 
 	p := &purchase.Purchase{
 		UID: 1,
@@ -87,7 +92,7 @@ func TestFunc_Get_NotFound(t *testing.T) {
 
 func TestFunc_GetAll(t *testing.T) {
 	shopModel := &shop.Shop{
-		Name: "shop_1",
+		Name: "shop_2",
 		Adress: "adress_1",
 		PhoneNubmer: "897612334334",
 	}

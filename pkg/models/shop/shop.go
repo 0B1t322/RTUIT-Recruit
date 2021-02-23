@@ -24,7 +24,7 @@ type Shop struct {
 
 
 func (s Shop) BeforeDelete(tx *gorm.DB)  error {
-	if err := tx.Delete(s.Count).Error; err != nil {
+	if err := tx.Delete(s.Count).Error; len(s.Count) > 0 && err != nil {
 		return err
 	}
 

@@ -43,14 +43,6 @@ func (sc *ShopController) Create(s *m.Shop) error {
 		return err
 	}
 
-	// for i, p := range s.Products {
-	// 	if p.ID != 0 {
-	// 		defer func() {
-	// 			sc.db.First(&s.Products[i])
-	// 		}()
-	// 	}
-	// }
-
 	return nil
 }
 
@@ -58,7 +50,7 @@ func (sc *ShopController) Create(s *m.Shop) error {
 // 
 // Don't update products and counts
 func (sc *ShopController) Update(s *m.Shop) error {
-	return  sc.Controller.Update(s)
+	return sc.Controller.Update(s)
 }
 
 // TODO methods to update count

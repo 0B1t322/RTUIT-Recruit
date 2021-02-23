@@ -53,4 +53,53 @@ func (sc *ShopController) Update(s *m.Shop) error {
 	return sc.Controller.Update(s)
 }
 
-// TODO methods to update count
+func (sc *ShopController) AddCount(ShopID, ProductID, Add uint) error {
+	return addCount(
+		sc.db,
+		ShopID,
+		ProductID,
+		func(old uint) int {
+			return int(old + Add)
+		},
+	)
+}
+
+func (sc *ShopController) SubCount(ShopID, ProductID, Sub uint) error {
+	return addCount(
+		sc.db,
+		ShopID,
+		ProductID,
+		func(old uint) int {
+			return int(old - Sub)
+		},
+	)
+}
+
+func addCount(
+	db *gorm.DB,
+	ShopID, ProductID uint,
+	add func(old uint) int,
+) error {
+	tx := db.Model(m.ShopProducts{}).
+				Where(
+					"shop_id = ? AND product_ID = ?",
+					ShopID, ProductID,
+				)
+	var oldCount uint
+	if err := tx.Select("count").First(&oldCount).Error; err == gorm.ErrRecordNotFound{
+		return ErrProductNotFound
+	} else if err != nil {
+		return err
+	}
+
+	var newCount int
+	if newCount = add(oldCount); newCount < 0 {
+		return ErrNegCount
+	}
+
+	if err := tx.Update("count", newCount).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

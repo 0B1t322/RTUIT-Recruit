@@ -17,12 +17,12 @@ type Purchase struct {
 
 	UID			uint
 
-	ShopID		uint			`json:"-"`
+	ShopID		uint			`json:"shop_id"`
 	Shop		shop.Shop		`json:"shop" gorm:"foreignKey:ShopID"`
 
 	BuyDate		time.Time 		`json:"buy_date"`
 
-	ProductID	uint			`json:"-"`
+	ProductID	uint			`json:"product_id"`
 	Product		product.Product	`json:"product" gorm:"foreignKey:ProductID"`
 
 	// Payment can be cash/card

@@ -1,6 +1,9 @@
 package handlers_test
 
 import (
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
+	p "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
+
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -28,12 +31,10 @@ func init() {
 var r *mux.Router
 
 func TestFunc_Add(t *testing.T) {
-	data, err := json.Marshal(struct{
-		ProductName 	string `json:"product_name"`
-		Cost			float64 `json:"cost"`
-	} {
-		"product_4",
-		213,
+	data, err := json.Marshal(p.Purchase{
+		ProductID: 29,
+		ShopID: 9,
+		Payment: "cash",
 	})
 	if err != nil {
 		t.Log(err)
@@ -72,13 +73,15 @@ func TestFunc_Add(t *testing.T) {
 }
 
 func TestFunc_Get(t *testing.T) {
-	data, err := json.Marshal(struct{
-		ProductName 	string `json:"product_name"`
-		Cost			float64 `json:"cost"`
-	} {
-		"product_2",
-		229,
+	data, err := json.Marshal(p.Purchase{
+		ProductID: 29,
+		ShopID: 9,
+		Payment: "cash",
 	})
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
 	if err != nil {
 		t.Log(err)
 		t.FailNow()
@@ -138,12 +141,10 @@ func TestFunc_Get_NotFound(t *testing.T) {
 	}
 
 	add := func() (uint, func()) {
-		data, err := json.Marshal(struct{
-			ProductName 	string `json:"product_name"`
-			Cost			float64 `json:"cost"`
-		} {
-			"product_2",
-			229,
+		data, err := json.Marshal(p.Purchase{
+			ProductID: 29,
+			ShopID: 9,
+			Payment: "cash",
 		})
 		if err != nil {
 			t.Log(err)
@@ -195,13 +196,17 @@ func TestFunc_Get_NotFound(t *testing.T) {
 
 func TestFunc_GetAll(t *testing.T) {
 	for i := 0; i < 10; i++ {
-		data, err := json.Marshal(struct{
-			ProductName 	string `json:"product_name"`
-			Cost			float64 `json:"cost"`
-		} {
-			fmt.Sprintf("product_%v",i),
-			240,
+		data, err := json.Marshal(p.Purchase{
+			Product: product.Product{
+				Name: fmt.Sprintf("product_%v", i),
+			},
+			ShopID: 9,
+			Payment: "cash",
 		})
+		if err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
 		if err != nil {
 			t.Log(err)
 			t.FailNow()
@@ -250,17 +255,13 @@ func TestFunc_GetAll(t *testing.T) {
 
 func TestFunc_GetAll_NotFound(t *testing.T) {
 	for i := 0; i < 10; i++ {
-		data, err := json.Marshal(struct{
-			ProductName 	string `json:"product_name"`
-			Cost			float64 `json:"cost"`
-		} {
-			fmt.Sprintf("product_%v",i),
-			240,
+		data, err := json.Marshal(p.Purchase{
+			Product: product.Product{
+				Name: fmt.Sprintf("product_%v", i),
+			},
+			ShopID: 9,
+			Payment: "cash",
 		})
-		if err != nil {
-			t.Log(err)
-			t.FailNow()
-		}
 
 		req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
 		w := httptest.NewRecorder()

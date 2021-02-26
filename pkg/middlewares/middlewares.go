@@ -48,7 +48,7 @@ func initLogger() {
 }
 
 const (
-	authHeaderPattern = `^Token ([^\s]{1,})`
+	authHeaderPattern = `(?m)^Token (.*\s*.*)`
 )
 
 // ContentTypeJSONMiddleware set header content-type to application json

@@ -3,7 +3,7 @@ module github.com/0B1t322/RTUIT-Recruit/service.purchases
 go 1.15
 
 require (
-	github.com/0B1t322/RTUIT-Recruit v0.1.6
+	github.com/0B1t322/RTUIT-Recruit v0.1.7
 	github.com/0B1t322/distanceLearningWebSite v0.0.0-20210211160901-f01e587d9046
 	github.com/gorilla/mux v1.8.0
 	github.com/jmoiron/sqlx v1.3.1 // indirect

@@ -2,10 +2,12 @@ package handlers_test
 
 import (
 	"crypto/sha512"
+
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
 	p "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -29,7 +31,7 @@ func init() {
 
 	sha := sha512.New()
 	sha.Write([]byte("my_secret_key"))
-	authHead = "Token " + string(sha.Sum(nil))
+	authHead = "Token " + hex.EncodeToString(sha.Sum(nil))
 	println(authHead)
 }
 
@@ -312,12 +314,12 @@ func TestFunc_GetAll_NotFound(t *testing.T) {
 		}()
 	}
 
-	req := httptest.NewRequest("GET", "/purchases/2", nil)
+	req := httptest.NewRequest("GET", "/purchases/100", nil)
 	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
-
+	t.Log(w.Body.String())
 	if w.Code != http.StatusNotFound {
 		t.Log(w.Code)
 		t.FailNow()

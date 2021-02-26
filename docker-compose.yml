@@ -17,6 +17,8 @@ services:
   service.purchases:
     image: 0b1t322/service.purchases:level_1
     container_name: service.purchases
+    command: 
+      "./main -sk="sekret_key" "
     ports: 
       - 8081:8081
     depends_on: 

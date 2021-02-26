@@ -1,6 +1,8 @@
 package app
 
 import (
+	"github.com/sirupsen/logrus"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/middlewares"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 	"fmt"
 	"net/http"
@@ -13,10 +15,10 @@ import (
 
 // App present a struct with db port and router
 // API of app:
-// 	GET /purchases/:id return a purchase
+// 	GET /purchases/:uid/:id return a purchase
 // 	GET /purchases/:uid return all purchase for UID
 // 	POST /purchases/:uid add purchase for current user
-// 	DELETE /purchases/:id delete a purchase with this id
+// 	DELETE /purchases/:uid/:id delete a purchase with this id
 type App struct {
 	db 		*gorm.DB
 
@@ -45,5 +47,6 @@ func (a *App) Start() error {
 }
 
 func (a *App) init() error {
+	middlewares.Logger = logrus.StandardLogger()
 	return purchase.AutoMigrate(a.db)
 }

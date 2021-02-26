@@ -16,7 +16,7 @@ type Shop struct {
 	// here all existing  products
 	Products	[]product.Product	`json:"products"  gorm:"many2many:shop_products;"`
 	// here product count
-	Count		[]ShopProducts		`json:"count" gorm:"-"`
+	Count		[]ShopProduct		`json:"count" gorm:"foreignKey:ShopID;references:ID"`
 }
 
 

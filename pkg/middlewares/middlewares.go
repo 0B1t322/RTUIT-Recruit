@@ -8,6 +8,7 @@ import (
 	"regexp"
 	_ "strings"
 
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -40,6 +41,12 @@ func initExpectKey() {
 	}
 }
 
+func initLogger() {
+	if Logger == nil {
+		Logger = logrus.StandardLogger()
+	}
+}
+
 const (
 	authHeaderPattern = `^Token ([^\s]{1,})`
 )
@@ -54,7 +61,8 @@ func ContentTypeJSONMiddleware(next http.Handler) http.Handler {
 
 func CheckTokenIfFromService(next http.Handler) http.Handler {
 	initExpectKey()
-
+	initLogger()
+	
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Example Authorization: Token dasdawfegjkdsa
 		authHeader := r.Header.Get("Authorization")
@@ -76,7 +84,7 @@ func CheckTokenIfFromService(next http.Handler) http.Handler {
 				"package": "middlewares",
 				"msg": "don't have matches",
 			}).Info()
-			
+
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}

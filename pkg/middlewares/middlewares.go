@@ -3,6 +3,7 @@ package middlewares
 import (
 	"bytes"
 	"crypto/sha512"
+	"encoding/hex"
 	"flag"
 	"net/http"
 	"regexp"
@@ -48,7 +49,7 @@ func initLogger() {
 }
 
 const (
-	authHeaderPattern = `(?m)^Token (.*\s*.*)`
+	authHeaderPattern = `^Token ([^\s]{1,})`
 )
 
 // ContentTypeJSONMiddleware set header content-type to application json
@@ -91,13 +92,23 @@ func CheckTokenIfFromService(next http.Handler) http.Handler {
 
 		token := s[1]
 
-		if !bytes.Equal(expectKey, []byte(token)) {
+		key, err := hex.DecodeString(token)
+		if err != nil {
+			Logger.WithFields(log.Fields{
+				"package": "middlewares",
+				"msg": err.Error(),
+			}).Info()
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if !bytes.Equal(expectKey, key) {
 			Logger.WithFields(log.Fields{
 				"package": "middlewares",
 				"msg": "don't equal",
 				"expect": string(expectKey),
 				"sekretKey": secretKey,
-				"key": token,
+				"key": key,
 			}).Info()
 
 			w.WriteHeader(http.StatusForbidden)

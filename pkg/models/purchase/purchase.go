@@ -18,7 +18,7 @@ type Purchase struct {
 	UID			uint
 
 	ShopID		uint			`json:"shop_id"`
-	Shop		shop.Shop		`json:"shop" gorm:"foreignKey:ShopID"`
+	Shop		shop.ShopInfo		`json:"shop" gorm:"foreignKey:ShopID"`
 
 	BuyDate		time.Time 		`json:"buy_date"`
 

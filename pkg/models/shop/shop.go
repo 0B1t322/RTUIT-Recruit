@@ -11,10 +11,7 @@ import (
 //
 // If  want  to create some  new product input only product  data waithout ID
 type Shop struct {
-	ID			uint				`gorm:"primarykey"`
-	Name		string 				`json:"name" gorm:"unique"`
-	Adress		string				`json:"adress"`
-	PhoneNubmer	string				`json:"phone_number"`
+	ShopInfo
 
 	// here all existing  products
 	Products	[]product.Product	`json:"products"  gorm:"many2many:shop_products;"`

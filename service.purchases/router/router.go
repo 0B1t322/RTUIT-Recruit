@@ -23,6 +23,7 @@ func New(DB *gorm.DB) *mux.Router {
 	// r.HandleFunc("/purchases/{id:[0-9]+}", handlers.Update).Methods("PUT")
 
 	r.Use(middlewares.ContentTypeJSONMiddleware)
+	r.Use(middlewares.CheckTokenIfFromService)
 
 	return r
 }

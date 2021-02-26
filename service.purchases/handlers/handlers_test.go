@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	"crypto/sha512"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
 	p "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 
@@ -25,10 +26,16 @@ func init() {
 	}
 
 	r = router.New(db)
+
+	sha := sha512.New()
+	sha.Write([]byte("my_secret_key"))
+	authHead = "Token " + string(sha.Sum(nil))
+	println(authHead)
 }
 
 
 var r *mux.Router
+var authHead string
 
 func TestFunc_Add(t *testing.T) {
 	data, err := json.Marshal(p.Purchase{
@@ -42,6 +49,7 @@ func TestFunc_Add(t *testing.T) {
 	}
 
 	req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
+	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w,req)
@@ -62,6 +70,7 @@ func TestFunc_Add(t *testing.T) {
 
 	defer func() {
 		req := httptest.NewRequest("DELETE", "/purchases/1/" + fmt.Sprint(ID), nil)
+		req.Header.Set("Authorization", authHead)
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
 
@@ -88,6 +97,7 @@ func TestFunc_Get(t *testing.T) {
 	}
 
 	req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
+	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w,req)
@@ -105,6 +115,7 @@ func TestFunc_Get(t *testing.T) {
 	}
 	defer func() {
 		req := httptest.NewRequest("DELETE", "/purchases/1/" + fmt.Sprint(ID), nil)
+		req.Header.Set("Authorization", authHead)
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
 
@@ -117,6 +128,7 @@ func TestFunc_Get(t *testing.T) {
 	t.Logf("Added with id: %v\n", ID)
 
 	req = httptest.NewRequest("GET", fmt.Sprintf("/purchases/1/%v", ID), nil)
+	req.Header.Set("Authorization", authHead)
 	w = httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -131,6 +143,7 @@ func TestFunc_Get(t *testing.T) {
 
 func TestFunc_Get_NotFound(t *testing.T) {
 	req := httptest.NewRequest("GET", fmt.Sprintf("/purchases/10/12"), nil)
+	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -151,6 +164,7 @@ func TestFunc_Get_NotFound(t *testing.T) {
 			t.FailNow()
 		}
 		req := httptest.NewRequest("POST", "/purchases/2", bytes.NewReader(data))
+		req.Header.Set("Authorization", authHead)
 		w := httptest.NewRecorder()
 
 		r.ServeHTTP(w,req)
@@ -170,6 +184,7 @@ func TestFunc_Get_NotFound(t *testing.T) {
 
 		return ID, (func() {
 			req := httptest.NewRequest("DELETE", "/purchases/2/" + fmt.Sprint(ID), nil)
+			req.Header.Set("Authorization", authHead)
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, req)
 
@@ -184,6 +199,7 @@ func TestFunc_Get_NotFound(t *testing.T) {
 	defer del()
 
 	req = httptest.NewRequest("GET", fmt.Sprintf("/purchases/10/" + fmt.Sprint(id)), nil)
+	req.Header.Set("Authorization", authHead)
 	w = httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -213,6 +229,7 @@ func TestFunc_GetAll(t *testing.T) {
 		}
 
 		req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
+		req.Header.Set("Authorization", authHead)
 		w := httptest.NewRecorder()
 
 		r.ServeHTTP(w,req)
@@ -230,6 +247,7 @@ func TestFunc_GetAll(t *testing.T) {
 		}
 		defer func() {
 			req := httptest.NewRequest("DELETE", "/purchases/1/" + fmt.Sprint(ID), nil)
+			req.Header.Set("Authorization", authHead)
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, req)
 
@@ -241,6 +259,7 @@ func TestFunc_GetAll(t *testing.T) {
 	}
 
 	req := httptest.NewRequest("GET", "/purchases/1", nil)
+	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -264,6 +283,7 @@ func TestFunc_GetAll_NotFound(t *testing.T) {
 		})
 
 		req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
+		req.Header.Set("Authorization", authHead)
 		w := httptest.NewRecorder()
 
 		r.ServeHTTP(w,req)
@@ -281,6 +301,7 @@ func TestFunc_GetAll_NotFound(t *testing.T) {
 		}
 		defer func() {
 			req := httptest.NewRequest("DELETE", "/purchases/1/" + fmt.Sprint(ID), nil)
+			req.Header.Set("Authorization", authHead)
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, req)
 
@@ -292,6 +313,7 @@ func TestFunc_GetAll_NotFound(t *testing.T) {
 	}
 
 	req := httptest.NewRequest("GET", "/purchases/2", nil)
+	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)

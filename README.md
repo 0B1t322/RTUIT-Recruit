@@ -1,9 +1,10 @@
-# API for level_1
+# API for level_2
 
 ## GET /purchases/:uid/:id 
 return a json purchase according to id in path
 if not find return 404 code and empty body
 if success return code 200
+require a Authorization header with key
 ### Example
 /purchases/1/1
 ```json
@@ -23,6 +24,7 @@ if success return code 200
 return all purchases for uid
 if not find any return code 404
 if success return code 200
+require a Authorization header with key
 ### Example
 /purchases/1
 ```json
@@ -54,6 +56,7 @@ if success return code 200
 ## POST /purchases/:uid
 Add to db a purchases with uid in path
 if add return code 201 and uint id of added purchase
+require a Authorization header with key
 ### Example
 /purchases/1
 body req:
@@ -68,5 +71,6 @@ body req:
 Delete a purchase with id in path
 if not found purchase with this id return code 404
 If success retorn code 200
+require a Authorization header with key
 ### Example
 /purchases/1/1

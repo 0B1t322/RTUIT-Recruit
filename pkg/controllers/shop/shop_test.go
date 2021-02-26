@@ -55,9 +55,11 @@ var sc *c.ShopController
 
 func TestFunc_Create(t *testing.T) {
 	s := &m.Shop{
-		Name:        "shop_1",
-		Adress:      "adress_1",
-		PhoneNubmer: "phone_1",
+		ShopInfo: m.ShopInfo{
+			Name:        "shop_1",
+			Adress:      "adress_1",
+			PhoneNubmer: "phone_1",
+		},
 		Products: []p.Product{
 			{ID: 29},
 		},
@@ -78,9 +80,11 @@ func TestFunc_Create(t *testing.T) {
 
 func TestFunc_Get(t *testing.T) {
 	s := &m.Shop{
-		Name:        "shop_1",
-		Adress:      "adress_1",
-		PhoneNubmer: "phone_1",
+		ShopInfo: m.ShopInfo{
+			Name:        "shop_1",
+			Adress:      "adress_1",
+			PhoneNubmer: "phone_1",
+		},
 		Products: []p.Product{
 			{ID: 29}, {ID: 30},
 		},
@@ -121,9 +125,11 @@ func TestFunc_Get_NotFound(t *testing.T) {
 
 func TestFunc_Update(t *testing.T) {
 	s := &m.Shop{
-		Name:        "shop_1",
-		Adress:      "adress_1",
-		PhoneNubmer: "phone_1",
+		ShopInfo: m.ShopInfo{
+			Name:        "shop_1",
+			Adress:      "adress_1",
+			PhoneNubmer: "phone_1",
+		},
 		Products: []p.Product{
 			{ID: 29}, {ID: 30},
 		},
@@ -150,9 +156,11 @@ func TestFunc_Update(t *testing.T) {
 
 func TestFunc_AddCount(t *testing.T) {
 	s := &m.Shop{
-		Name:        "shop_1",
-		Adress:      "adress_1",
-		PhoneNubmer: "phone_1",
+		ShopInfo: m.ShopInfo{
+			Name:        "shop_1",
+			Adress:      "adress_1",
+			PhoneNubmer: "phone_1",
+		},
 		Products: []p.Product{
 			{ID: 29}, {ID: 30},
 		},
@@ -176,9 +184,11 @@ func TestFunc_AddCount(t *testing.T) {
 
 func TestFunc_AddCount_ProductNotFound(t *testing.T) {
 	s := &m.Shop{
-		Name:        "shop_1",
-		Adress:      "adress_1",
-		PhoneNubmer: "phone_1",
+		ShopInfo: m.ShopInfo{
+			Name:        "shop_1",
+			Adress:      "adress_1",
+			PhoneNubmer: "phone_1",
+		},
 		Products: []p.Product{
 			{ID: 29}, {ID: 30},
 		},
@@ -202,9 +212,11 @@ func TestFunc_AddCount_ProductNotFound(t *testing.T) {
 
 func TestFunc_SubCount(t *testing.T) {
 	s := &m.Shop{
-		Name:        "shop_1",
-		Adress:      "adress_1",
-		PhoneNubmer: "phone_1",
+		ShopInfo: m.ShopInfo{
+			Name:        "shop_1",
+			Adress:      "adress_1",
+			PhoneNubmer: "phone_1",
+		},
 		Products: []p.Product{
 			{ID: 29}, {ID: 30},
 		},
@@ -233,9 +245,11 @@ func TestFunc_SubCount(t *testing.T) {
 
 func TestFunc_SubCount_ErrNegCount(t *testing.T) {
 	s := &m.Shop{
-		Name:        "shop_1",
-		Adress:      "adress_1",
-		PhoneNubmer: "phone_1",
+		ShopInfo: m.ShopInfo{
+			Name:        "shop_1",
+			Adress:      "adress_1",
+			PhoneNubmer: "phone_1",
+		},
 		Products: []p.Product{
 			{ID: 29}, {ID: 30},
 		},

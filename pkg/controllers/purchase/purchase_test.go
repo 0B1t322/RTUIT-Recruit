@@ -34,9 +34,11 @@ var sc *s.ShopController
 
 func TestFunc_Get(t *testing.T) {
 	shopModel := &shop.Shop{
-		Name: "shop_1",
-		Adress: "adress_1",
-		PhoneNubmer: "897612334334",
+		ShopInfo: shop.ShopInfo{
+			Name: "shop_1",
+			Adress: "adress_1",
+			PhoneNubmer: "897612334334",
+		},
 	}
 
 	if err := sc.Create(shopModel); err != nil {
@@ -92,9 +94,11 @@ func TestFunc_Get_NotFound(t *testing.T) {
 
 func TestFunc_GetAll(t *testing.T) {
 	shopModel := &shop.Shop{
-		Name: "shop_2",
-		Adress: "adress_1",
-		PhoneNubmer: "897612334334",
+		ShopInfo: shop.ShopInfo{
+			Name: "shop_2",
+			Adress: "adress_1",
+			PhoneNubmer: "897612334334",
+		},
 	}
 
 	if err := sc.Create(shopModel); err != nil {

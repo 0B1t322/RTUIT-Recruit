@@ -9,6 +9,9 @@ import (
 type ShopProducts struct {
 	ShopID		uint		`json:"shop_id" gorm:"primaryKey"`
 	ProductID	uint		`json:"product_id" gorm:"primaryKey"`
+
+	// TODO make foreign key here for product
+
 	Count		uint		`json:"count"`
 	UpdatedAt	time.Time
 }

@@ -80,8 +80,17 @@ func TestFunc_Get(t *testing.T) {
 	if err  != nil {
 		t.Log(err)
 	}
-
 	t.Log(string(data))
+
+	unP := purchase.Purchase{}
+	if err := json.Unmarshal(data, &unP); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	t.Log(unP)
+	t.Log(unP.ProductID)
+	t.Log(unP.ShopID)
 }
 
 func TestFunc_Get_NotFound(t *testing.T) {

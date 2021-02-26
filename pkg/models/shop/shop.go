@@ -11,12 +11,12 @@ import (
 //
 // If  want  to create some  new product input only product  data waithout ID
 type Shop struct {
-	ShopInfo
+	ShopInfo						
 
 	// here all existing  products
 	Products	[]product.Product	`json:"products"  gorm:"many2many:shop_products;"`
 	// here product count
-	Count		[]ShopProducts		`json:"-" gorm:"-"`
+	Count		[]ShopProducts		`json:"count" gorm:"-"`
 }
 
 
@@ -51,6 +51,10 @@ func (s *Shop) AfterFind(tx *gorm.DB) error {
 
 func AutoMigrate(db *gorm.DB) error {
 	if err := db.AutoMigrate(&Shop{}); err != nil {
+		return err
+	}
+
+	if err := db.AutoMigrate(&ShopInfo{}); err != nil {
 		return err
 	}
 

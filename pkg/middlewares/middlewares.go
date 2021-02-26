@@ -62,7 +62,7 @@ func ContentTypeJSONMiddleware(next http.Handler) http.Handler {
 func CheckTokenIfFromService(next http.Handler) http.Handler {
 	initExpectKey()
 	initLogger()
-	
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Example Authorization: Token dasdawfegjkdsa
 		authHeader := r.Header.Get("Authorization")
@@ -95,6 +95,9 @@ func CheckTokenIfFromService(next http.Handler) http.Handler {
 			Logger.WithFields(log.Fields{
 				"package": "middlewares",
 				"msg": "don't equal",
+				"expect": expectKey,
+				"sekretKey": secretKey,
+				"key": []byte(token),
 			}).Info()
 
 			w.WriteHeader(http.StatusForbidden)

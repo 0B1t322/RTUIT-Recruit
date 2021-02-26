@@ -1,12 +1,14 @@
 package handlers
 
 import (
-	"gorm.io/gorm"
-	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
-	pc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/purchase"
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
+
+	pc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/purchase"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
+	"gorm.io/gorm"
 
 	log "github.com/sirupsen/logrus"
 
@@ -54,9 +56,13 @@ func logAndWriteAboutInternalError(w http.ResponseWriter, err error, m string) {
 // 	}
 func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id := vars["id"]
-	uid := vars["uid"]
+
+	_id, _ := strconv.ParseUint(vars["id"], 10, 64)
+	_uid, _ := strconv.ParseUint(vars["uid"], 10, 64)
 	
+	id := uint(_id)
+	uid := uint(_uid)
+
 	p, err := ph.c.Get(id)
 	if err == pc.ErrNotFound {
 		w.WriteHeader(http.StatusNotFound)
@@ -87,7 +93,9 @@ func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 // 
 func (ph* PurchaseHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	uid := vars["uid"]
+
+	_uid, _ := strconv.ParseUint(vars["uid"], 10, 64)
+	uid := uint(_uid)
 
 	ps, err := ph.c.GetAll(uid)
 	if err == pc.ErrNotFound {
@@ -119,7 +127,9 @@ func (ph* PurchaseHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 // 	}
 func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	uid := vars["uid"]
+
+	_uid, _ := strconv.ParseUint(vars["uid"], 10, 64)
+	uid := uint(_uid)
 
 	d := json.NewDecoder(r.Body)
 
@@ -165,14 +175,18 @@ func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 // }
 
 // Delete a purchase with id in path
-
+// 
 // if not found purchase with this id return code 404
-
+// 
 // If success retorn code 200
 func (ph *PurchaseHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	id := vars["id"]
-	uid := vars["uid"]
+	
+	_id, _ := strconv.ParseUint(vars["id"], 10, 64)
+	_uid, _ := strconv.ParseUint(vars["uid"], 10, 64)
+	
+	id := uint(_id)
+	uid := uint(_uid)
 
 	p, err := ph.c.Get(id)
 	if err == pc.ErrNotFound {

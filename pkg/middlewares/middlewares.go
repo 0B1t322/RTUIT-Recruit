@@ -95,9 +95,9 @@ func CheckTokenIfFromService(next http.Handler) http.Handler {
 			Logger.WithFields(log.Fields{
 				"package": "middlewares",
 				"msg": "don't equal",
-				"expect": expectKey,
+				"expect": string(expectKey),
 				"sekretKey": secretKey,
-				"key": []byte(token),
+				"key": token,
 			}).Info()
 
 			w.WriteHeader(http.StatusForbidden)

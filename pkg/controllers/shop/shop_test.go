@@ -23,13 +23,18 @@ func init() {
 	}
 
 	sc = c.New(db)
+
+	if  err := p.AutoMigrate(db); err != nil {
+		panic(err)
+	}
+
 	if err := m.AutoMigrate(db); err != nil {
 		panic(err)
 	}
 
-	if err := m.SetupJoinTable(db); err != nil {
-		panic(err)
-	}
+	// if err := m.SetupJoinTable(db); err != nil {
+	// 	panic(err)
+	// }
 
 	pc := pc.New(db)
 
@@ -49,6 +54,14 @@ func init() {
 		Category: "Phone",
 	})
 
+	pc.Create(&p.Product{
+		ID: 31,
+		Name: "phone_3",
+		Desccription: "more coolest phone",
+		Cost: 17000,
+		Category: "Phone",
+	})
+
 }
 
 var sc *c.ShopController
@@ -60,8 +73,8 @@ func TestFunc_Create(t *testing.T) {
 			Adress:      "adress_1",
 			PhoneNubmer: "phone_1",
 		},
-		Products: []p.Product{
-			{ID: 29},
+		ShopProducts: []m.ShopProduct{
+			{ProductID: 29},
 		},
 	}
 
@@ -76,6 +89,8 @@ func TestFunc_Create(t *testing.T) {
 		t.Log(err)
 		t.FailNow()
 	}
+	// 
+	// 
 }
 
 func TestFunc_Get(t *testing.T) {
@@ -85,8 +100,8 @@ func TestFunc_Get(t *testing.T) {
 			Adress:      "adress_1",
 			PhoneNubmer: "phone_1",
 		},
-		Products: []p.Product{
-			{ID: 29}, {ID: 30},
+		ShopProducts: []m.ShopProduct{
+			{ProductID: 29}, {ProductID: 30},
 		},
 	}
 
@@ -130,8 +145,8 @@ func TestFunc_Update(t *testing.T) {
 			Adress:      "adress_1",
 			PhoneNubmer: "phone_1",
 		},
-		Products: []p.Product{
-			{ID: 29}, {ID: 30},
+		ShopProducts: []m.ShopProduct{
+			{ProductID: 29}, {ProductID: 30},
 		},
 	}
 
@@ -145,6 +160,8 @@ func TestFunc_Update(t *testing.T) {
 			t.FailNow()
 		}
 	}()
+
+	s.ShopProducts = append(s.ShopProducts, m.ShopProduct{ProductID: 31} )
 
 	if err := sc.Update(s); err !=  nil {
 		t.Log(err)
@@ -161,8 +178,8 @@ func TestFunc_AddCount(t *testing.T) {
 			Adress:      "adress_1",
 			PhoneNubmer: "phone_1",
 		},
-		Products: []p.Product{
-			{ID: 29}, {ID: 30},
+		ShopProducts: []m.ShopProduct{
+			{ProductID: 29}, {ProductID: 30},
 		},
 	}
 	if err := sc.Create(s); err != nil {
@@ -189,8 +206,8 @@ func TestFunc_AddCount_ProductNotFound(t *testing.T) {
 			Adress:      "adress_1",
 			PhoneNubmer: "phone_1",
 		},
-		Products: []p.Product{
-			{ID: 29}, {ID: 30},
+		ShopProducts: []m.ShopProduct{
+			{ProductID: 29}, {ProductID: 30},
 		},
 	}
 	if err := sc.Create(s); err != nil {
@@ -217,8 +234,8 @@ func TestFunc_SubCount(t *testing.T) {
 			Adress:      "adress_1",
 			PhoneNubmer: "phone_1",
 		},
-		Products: []p.Product{
-			{ID: 29}, {ID: 30},
+		ShopProducts: []m.ShopProduct{
+			{ProductID: 29}, {ProductID: 30},
 		},
 	}
 	if err := sc.Create(s); err != nil {
@@ -250,8 +267,8 @@ func TestFunc_SubCount_ErrNegCount(t *testing.T) {
 			Adress:      "adress_1",
 			PhoneNubmer: "phone_1",
 		},
-		Products: []p.Product{
-			{ID: 29}, {ID: 30},
+		ShopProducts: []m.ShopProduct{
+			{ProductID: 29}, {ProductID: 30},
 		},
 	}
 	if err := sc.Create(s); err != nil {

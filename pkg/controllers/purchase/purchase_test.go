@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
+	_ "github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
 
@@ -23,7 +23,9 @@ func init() {
 		panic(err)
 	}
 	
-	purchase.AutoMigrate(DB)
+	if err := purchase.AutoMigrate(DB); err != nil {
+		panic(err)
+	}
 
 	pc = c.New(DB)
 	sc = s.New(DB)
@@ -54,9 +56,7 @@ func TestFunc_Get(t *testing.T) {
 
 	p := &purchase.Purchase{
 		UID: 1,
-		Product: product.Product{
-			Name: "some_product",
-		},
+		ProductID: 29,
 		ShopID: shopModel.ID,
 		BuyDate: time.Now(),
 	}
@@ -121,9 +121,7 @@ func TestFunc_GetAll(t *testing.T) {
 		p := &purchase.Purchase{
 			UID: 1,
 			ShopID: shopModel.ID,
-			Product: product.Product{
-				Name: "Phone",
-			},
+			ProductID: 29,
 			BuyDate: time.Now(),
 		}
 
@@ -146,6 +144,14 @@ func TestFunc_GetAll(t *testing.T) {
 	}
 
 	t.Log(ps)
+
+	data, err := json.Marshal(ps)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	t.Log(data)
 }
 
 func TestFunc_GetAll_NotFound(t *testing.T) {

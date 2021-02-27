@@ -1,7 +1,7 @@
 package shop
 
 import (
-	"github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
+	_ "github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
 	"gorm.io/gorm"
 )
 
@@ -13,40 +13,17 @@ import (
 type Shop struct {
 	ShopInfo						
 
-	// here all existing  products
-	Products	[]product.Product	`json:"products"  gorm:"many2many:shop_products;"`
 	// here product count
-	Count		[]ShopProducts		`json:"count" gorm:"-"`
+	ShopProducts		[]ShopProduct		`json:"shop_products" gorm:"foreignKey:ShopID;references:ID"`
 }
 
 
 func (s Shop) BeforeDelete(tx *gorm.DB)  error {
-	if err := tx.Delete(s.Count).Error; len(s.Count) > 0 && err != nil {
+	if err := tx.Delete(s.ShopProducts).Error; len(s.ShopProducts) > 0 && err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func (s *Shop) AfterCreate(tx *gorm.DB) error {
-	for i, p := range s.Products {
-		if p.ID != 0 {
-			err := tx.First(&s.Products[i]).Error
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	if err := s.setCount(tx); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Shop) AfterFind(tx *gorm.DB) error {
-	return s.setProductAndCounts(tx)
 }
 
 func AutoMigrate(db *gorm.DB) error {
@@ -58,62 +35,7 @@ func AutoMigrate(db *gorm.DB) error {
 		return err
 	}
 
-	if err :=  db.AutoMigrate(&ShopProducts{}); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Shop) setProducts(tx *gorm.DB) error {
-	var ProductsID []uint
-	if err := tx.Table("shop_products").
-				Where("shop_id = ?", s.ID).
-				Select("product_id").
-				Find(&ProductsID).Error; err != nil {
-		return err
-	}
-
-	if err := tx.Model(s.Products).
-				Where(ProductsID).
-				Find(&s.Products).
-				Error; 
-	err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Shop) setCount(tx *gorm.DB) error {
-	if err := tx.Table("shop_products").
-			Where("shop_id = ?", s.ID).
-			Find(&s.Count).Error;
-	err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *Shop) setProductAndCounts(tx *gorm.DB) error {
-	if err := tx.Model(s.Count).
-			Where("shop_id = ?", s.ID).
-			Find(&s.Count).Error;
-	err != nil {
-		return err
-	}
-
-	var ProductsID []uint
-	for _, c := range s.Count {
-		ProductsID = append(ProductsID, c.ProductID)
-	}
-
-	if err := tx.Model(s.Products).
-				Where(ProductsID).
-				Find(&s.Products).
-				Error;
-	err != nil {
+	if err := db.AutoMigrate(&ShopProduct{}); err != nil {
 		return err
 	}
 
@@ -121,14 +43,22 @@ func (s *Shop) setProductAndCounts(tx *gorm.DB) error {
 }
 
 func (s *Shop) AfterUpdate(tx *gorm.DB) error {
-	for i, c := range s.Count {
+	for i, c := range s.ShopProducts {
 		if err := tx.Table("shop_products").
 					Where("shop_id = ? AND product_id = ? AND updated_at > ?", s.ID, c.ProductID, c.UpdatedAt).
-					Find(&s.Count[i]).
+					Find(&s.ShopProducts[i]).
 					Error;
 		err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+func (s *Shop) AfterFind(tx *gorm.DB) error {
+	if err := tx.Find(&s.ShopProducts, "shop_id = ?", s.ID).Error; err != nil {
+		return err
 	}
 
 	return nil

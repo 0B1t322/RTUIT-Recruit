@@ -80,7 +80,7 @@ func addCount(
 	ShopID, ProductID uint,
 	add func(old uint) int,
 ) error {
-	tx := db.Model(m.ShopProducts{}).
+	tx := db.Model(m.ShopProduct{}).
 				Where(
 					"shop_id = ? AND product_ID = ?",
 					ShopID, ProductID,

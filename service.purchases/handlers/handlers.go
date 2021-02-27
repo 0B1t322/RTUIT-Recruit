@@ -127,7 +127,7 @@ func (ph* PurchaseHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 // 	}
 func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-
+	
 	_uid, _ := strconv.ParseUint(vars["uid"], 10, 64)
 	uid := uint(_uid)
 

@@ -50,6 +50,8 @@ func TestFunc_Add(t *testing.T) {
 		t.FailNow()
 	}
 
+	t.Log(string(data))
+
 	req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
 	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
@@ -141,6 +143,7 @@ func TestFunc_Get(t *testing.T) {
 	}
 
 	t.Log(w.Body.String())
+	// 
 }
 
 func TestFunc_Get_NotFound(t *testing.T) {

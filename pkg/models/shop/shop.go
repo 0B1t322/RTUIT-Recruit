@@ -42,17 +42,6 @@ func AutoMigrate(db *gorm.DB) error {
 	return nil
 }
 
-func (s *Shop) setCount(tx *gorm.DB) error {
-	if err := tx.Table("shop_products").
-			Where("shop_id = ?", s.ID).
-			Find(&s.ShopProducts).Error;
-	err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func (s *Shop) AfterUpdate(tx *gorm.DB) error {
 	for i, c := range s.ShopProducts {
 		if err := tx.Table("shop_products").

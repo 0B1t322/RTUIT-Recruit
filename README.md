@@ -46,44 +46,44 @@ require a Authorization header with key
             "uid": 1,
             "shop_id": 9,
             "shop": {
-                "ID": 0,
-                "name": "",
-                "adress": "",
-                "phone_number": ""
+                "ID": 9,
+                "name": "cool_shop",
+                "adress": "adress_1",
+                "phone_number": "89991244567"
             },
-            "buy_date": "2021-02-27T18:32:47.959Z",
+            "buy_date": "2021-02-27T18:52:20.059Z",
             "product_id": 29,
             "product": {
-                "ID": 0,
-                "name": "",
-                "description": "",
-                "cost": 0,
-                "category": ""
+                "ID": 29,
+                "name": "phone_1",
+                "description": "cool phone",
+                "cost": 13000,
+                "category": "Phone"
             },
             "payment": "",
-            "count": 1
+            "count": 5
         },
         {
             "id": 2,
             "uid": 1,
             "shop_id": 9,
             "shop": {
-                "ID": 0,
-                "name": "",
-                "adress": "",
-                "phone_number": ""
+                "ID": 9,
+                "name": "cool_shop",
+                "adress": "adress_1",
+                "phone_number": "89991244567"
             },
-            "buy_date": "2021-02-27T18:34:45.919Z",
+            "buy_date": "2021-02-27T18:52:26.817Z",
             "product_id": 29,
             "product": {
-                "ID": 0,
-                "name": "",
-                "description": "",
-                "cost": 0,
-                "category": ""
+                "ID": 29,
+                "name": "phone_1",
+                "description": "cool phone",
+                "cost": 13000,
+                "category": "Phone"
             },
             "payment": "",
-            "count": 5
+            "count": 1
         }
     ]
 ```

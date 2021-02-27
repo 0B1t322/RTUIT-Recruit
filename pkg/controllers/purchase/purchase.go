@@ -26,13 +26,13 @@ func (pc *PurchaseController) Get(ID uint) (*m.Purchase, error) {
 		return nil, err
 	}
 
-	if err := pc.db.Model(p).Association("Shop").Find(&p.Shop); err != nil {
-		return nil, err
-	}
+	// if err := pc.db.Model(p).Association("Shop").Find(&p.Shop); err != nil {
+	// 	return nil, err
+	// }
 
-	if err := pc.db.Model(p).Association("Product").Find(&p.Product); err != nil {
-		return nil, err
-	}
+	// if err := pc.db.Model(p).Association("Product").Find(&p.Product); err != nil {
+	// 	return nil, err
+	// }
 
 	return p, nil
 }
@@ -49,6 +49,14 @@ func (pc *PurchaseController) GetAll(UID uint) ([]*m.Purchase, error)  {
 	if len(p) == 0 {
 		return nil, ErrNotFound
 	}
+
+	// if err := pc.db.Model(p).Association("Shop").Find(&p.Shop); err != nil {
+	// 	return nil, err
+	// }
+
+	// if err := pc.db.Model(p).Association("Product").Find(&p.Product); err != nil {
+	// 	return nil, err
+	// }
 
 	return p, nil
 }

@@ -83,6 +83,20 @@ func (p *Purchase) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
+
 func AutoMigrate(db *gorm.DB) error {
 	return db.AutoMigrate(&Purchase{})
+}
+
+func (p *Purchase) AfterFind(tx *gorm.DB) error {
+	
+	if err := tx.Model(p).Association("Shop").Find(&p.Shop); err != nil {
+		return err
+	}
+
+	if err := tx.Model(p).Association("Product").Find(&p.Product); err != nil {
+		return err
+	}
+
+	return nil
 }

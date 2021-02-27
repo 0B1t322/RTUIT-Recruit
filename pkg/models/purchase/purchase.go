@@ -42,7 +42,7 @@ type jsonPurchase struct {
 
 	BuyDate		time.Time 		`json:"buy_date"`
 
-	ProductID	uint
+	ProductID	uint			`json:"product_id"`
 	Product		product.Product	`json:"product"`
 
 	// Payment can be cash/card

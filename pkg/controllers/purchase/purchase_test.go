@@ -1,10 +1,11 @@
 package purchase_test
 
 import (
-	s "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/shop"
 	"encoding/json"
 	"testing"
 	"time"
+
+	s "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/shop"
 
 	_ "github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
@@ -14,7 +15,6 @@ import (
 	"github.com/0B1t322/distanceLearningWebSite/pkg/db"
 )
 
-
 func init() {
 	manager := db.NewManager("root", "root", "127.0.0.1:3306", time.Second)
 
@@ -22,7 +22,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	if err := purchase.AutoMigrate(DB); err != nil {
 		panic(err)
 	}
@@ -37,8 +37,8 @@ var sc *s.ShopController
 func TestFunc_Get(t *testing.T) {
 	shopModel := &shop.Shop{
 		ShopInfo: shop.ShopInfo{
-			Name: "shop_1",
-			Adress: "adress_1",
+			Name:        "shop_1",
+			Adress:      "adress_1",
 			PhoneNubmer: "897612334334",
 		},
 	}
@@ -55,17 +55,16 @@ func TestFunc_Get(t *testing.T) {
 	}()
 
 	p := &purchase.Purchase{
-		UID: 1,
+		UID:       1,
 		ProductID: 29,
-		ShopID: shopModel.ID,
-		BuyDate: time.Now(),
+		ShopID:    shopModel.ID,
+		BuyDate:   time.Now(),
 	}
 	if err := pc.Create(p); err != nil {
 		t.Log(err)
 		t.FailNow()
 	}
 	defer pc.Delete(p)
-
 
 	getP, err := pc.Get(p.ID)
 	if err != nil {
@@ -77,7 +76,7 @@ func TestFunc_Get(t *testing.T) {
 	t.Log(getP.Shop)
 	t.Log(getP.Product)
 	data, err := json.Marshal(getP)
-	if err  != nil {
+	if err != nil {
 		t.Log(err)
 	}
 	t.Log(string(data))
@@ -104,8 +103,8 @@ func TestFunc_Get_NotFound(t *testing.T) {
 func TestFunc_GetAll(t *testing.T) {
 	shopModel := &shop.Shop{
 		ShopInfo: shop.ShopInfo{
-			Name: "shop_2",
-			Adress: "adress_1",
+			Name:        "shop_2",
+			Adress:      "adress_1",
 			PhoneNubmer: "897612334334",
 		},
 	}
@@ -116,13 +115,12 @@ func TestFunc_GetAll(t *testing.T) {
 	}
 	defer sc.Delete(shopModel)
 
-	
-	for i := 0; i  < 10; i++ {
+	for i := 0; i < 10; i++ {
 		p := &purchase.Purchase{
-			UID: 1,
-			ShopID: shopModel.ID,
+			UID:       1,
+			ShopID:    shopModel.ID,
 			ProductID: 29,
-			BuyDate: time.Now(),
+			BuyDate:   time.Now(),
 		}
 
 		if err := pc.Create(p); err != nil {
@@ -138,7 +136,7 @@ func TestFunc_GetAll(t *testing.T) {
 		t.FailNow()
 	}
 
-	if l := len(ps); l < 10  {
+	if l := len(ps); l < 10 {
 		t.Log(l)
 		t.FailNow()
 	}
@@ -151,7 +149,7 @@ func TestFunc_GetAll(t *testing.T) {
 		t.FailNow()
 	}
 
-	t.Log(data)
+	t.Log(string(data))
 }
 
 func TestFunc_GetAll_NotFound(t *testing.T) {
@@ -162,3 +160,24 @@ func TestFunc_GetAll_NotFound(t *testing.T) {
 	}
 }
 
+func TestFunc_MarshallJSON(t *testing.T) {
+	p := &purchase.Purchase{
+		ID:        1,
+		ShopID:    2,
+		ProductID: 3,
+		Payment:   "cash",
+		Count:     2,
+	}
+
+	data, err := json.Marshal(p)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	t.Log(string(data))
+
+	getP := purchase.Purchase{}
+
+	json.Unmarshal(data, &getP)
+	t.Log(getP)
+}

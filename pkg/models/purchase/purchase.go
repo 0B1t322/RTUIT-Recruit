@@ -37,11 +37,12 @@ type jsonPurchase struct {
 	ID			uint			`json:"id"`
 
 	UID			uint			`json:"uid"`
-
+	ShopID		uint			`json:"shop_id"`
 	Shop		shop.ShopInfo	`json:"shop"`
 
 	BuyDate		time.Time 		`json:"buy_date"`
 
+	ProductID	uint
 	Product		product.Product	`json:"product"`
 
 	// Payment can be cash/card
@@ -54,8 +55,10 @@ func (p *Purchase) MarshalJSON() ([]byte, error) {
 	return json.Marshal(jsonPurchase{
 		ID: p.ID,
 		UID: p.UID,
+		ShopID: p.ShopID,
 		Shop: p.Shop.ShopInfo,
 		BuyDate: p.BuyDate,
+		ProductID: p.ProductID,
 		Product: p.Product,
 		Payment: p.Payment,
 		Count: p.Count,
@@ -70,10 +73,10 @@ func (p *Purchase) UnmarshalJSON(data []byte) error {
 
 	p.ID 		= jsonPur.ID
 	p.UID		= jsonPur.UID
-	p.ShopID	= jsonPur.Shop.ID
+	p.ShopID	= jsonPur.ShopID
 	p.Shop		= shop.Shop{ShopInfo: jsonPur.Shop}
 	p.BuyDate	= jsonPur.BuyDate
-	p.ProductID	= jsonPur.Product.ID
+	p.ProductID	= jsonPur.ProductID
 	p.Product	= jsonPur.Product
 	p.Payment	= jsonPur.Payment
 	p.Count		= jsonPur.Count

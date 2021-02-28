@@ -31,6 +31,8 @@ type Purchase struct {
 	Payment		string			`json:"payment"`
 
 	Count		uint			`json:"count"`
+
+	Cost		uint			`json:"cost"`
 }
 
 type jsonPurchase struct {
@@ -49,6 +51,8 @@ type jsonPurchase struct {
 	Payment		string			`json:"payment"`
 
 	Count		uint			`json:"count"`
+
+	Cost		uint			`json:"cost"`
 }
 
 func (p *Purchase) MarshalJSON() ([]byte, error) {
@@ -62,6 +66,7 @@ func (p *Purchase) MarshalJSON() ([]byte, error) {
 		Product: p.Product,
 		Payment: p.Payment,
 		Count: p.Count,
+		Cost: p.Cost,
 	})
 }
 
@@ -80,6 +85,7 @@ func (p *Purchase) UnmarshalJSON(data []byte) error {
 	p.Product	= jsonPur.Product
 	p.Payment	= jsonPur.Payment
 	p.Count		= jsonPur.Count
+	p.Cost		= jsonPur.Cost
 
 	return nil
 }
@@ -89,7 +95,7 @@ func AutoMigrate(db *gorm.DB) error {
 }
 
 func (p *Purchase) AfterFind(tx *gorm.DB) error {
-	
+
 	if err := tx.Model(p).Association("Shop").Find(&p.Shop); err != nil {
 		return err
 	}

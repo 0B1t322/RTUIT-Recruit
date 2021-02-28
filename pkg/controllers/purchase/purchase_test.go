@@ -59,6 +59,7 @@ func TestFunc_Get(t *testing.T) {
 		ProductID: 29,
 		ShopID:    shopModel.ID,
 		BuyDate:   time.Now(),
+		Cost: 99999,
 	}
 	if err := pc.Create(p); err != nil {
 		t.Log(err)

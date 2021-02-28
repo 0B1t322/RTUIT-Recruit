@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/0B1t322/RTUIT-Recruit/pkg/app"
 	"github.com/sirupsen/logrus"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/middlewares"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
@@ -29,7 +30,7 @@ type App struct {
 }
 
 // New return a pointer for new app
-func New(DB *gorm.DB, Port string) *App {
+func New(DB *gorm.DB, Port string) app.App {
 	return &App{
 		db: DB,
 		port: Port,

@@ -31,7 +31,7 @@ func logAndWriteAboutInternalError(w http.ResponseWriter, err error, m string) {
 	log.WithFields(
 		log.Fields{
 			"Package": "handlers",
-			"Method": "Get",
+			"Method": m,
 			"Error": err,
 		},
 	).Error()

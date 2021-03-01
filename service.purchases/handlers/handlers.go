@@ -203,9 +203,11 @@ func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 
 	p.UID = uid
 	p.BuyDate = time.Now()
-	// TODO add chekcs  for ErrInvalidSHopID
-	// TODO ErrInvalidProductID
-	if err := ph.c.Create(p); err != nil {
+	if err := ph.c.Create(p); err == pc.ErrInvalidShopID || err == pc.ErrInvalidProductID {
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(err.Error()))
+		return
+	} else if err != nil {
 		logAndWriteAboutInternalError(w, err, "Add")
 		return
 	}

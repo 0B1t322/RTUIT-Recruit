@@ -18,7 +18,7 @@ import (
 
 func init() {
 	flag.StringVar(
-		&secretKey, 
+		&SecretKey, 
 		"sk", 
 		"my_secret_key", 
 		"secret key for allows methods",
@@ -27,7 +27,7 @@ func init() {
 
 var ( 
 	expectKey []byte
-	secretKey string
+	SecretKey string
 	ifInit bool
 
 	Logger *log.Logger
@@ -36,7 +36,7 @@ var (
 func initExpectKey() {
 	if !ifInit {
 		sha := sha512.New()
-		sha.Write([]byte(secretKey))
+		sha.Write([]byte(SecretKey))
 		expectKey = sha.Sum(nil)
 		ifInit = true
 	}
@@ -107,7 +107,7 @@ func CheckTokenIfFromService(next http.Handler) http.Handler {
 				"package": "middlewares",
 				"msg": "don't equal",
 				"expect": string(expectKey),
-				"sekretKey": secretKey,
+				"sekretKey": SecretKey,
 				"key": key,
 			}).Info()
 

@@ -62,14 +62,13 @@ func (pc *PurchaseController) GetAll(UID uint) ([]*m.Purchase, error)  {
 }
 
 func (pc *PurchaseController) Create(p *m.Purchase) error {
-	if err := pc.db.Create(p).Error; err != nil && productNotFound(err) {
+	if err := pc.db.Create(p).Error; err.Error() == ErrInvalidProductID.Error() {
 		return ErrInvalidProductID
-	} else if err != nil && shopNotFound(err) {
+	} else if err.Error() == ErrInvalidShopID.Error() {
 		return ErrInvalidShopID
 	} else if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -88,14 +87,4 @@ func (pc *PurchaseController) Delete(p *m.Purchase) error {
 	}
 
 	return nil
-}
-
-// Два костыля
-
-func shopNotFound(err error) bool {
-	return strings.Contains(err.Error(), "`shops`")
-}
-
-func productNotFound(err error) bool {
-	return strings.Contains(err.Error(), "`products`")
 }

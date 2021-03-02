@@ -95,6 +95,10 @@ func AutoMigrate(db *gorm.DB) error {
 	return db.AutoMigrate(&Purchase{})
 }
 
+func (p *Purchase) BeforeFind(tx *gorm.DB) error {
+	return p.findShopAndProduct(tx)
+}
+
 func (p *Purchase) AfterFind(tx *gorm.DB) error {
 
 	if err := tx.Model(p).Association("Shop").Find(&p.Shop); err != nil {
@@ -109,10 +113,20 @@ func (p *Purchase) AfterFind(tx *gorm.DB) error {
 }
 
 func (p *Purchase) BeforeCreate(tx *gorm.DB) error {
-	if tx.First(&p.Shop).Error == gorm.ErrRecordNotFound {
+	return p.findShopAndProduct(tx)
+}
+
+func(p *Purchase) findShopAndProduct(tx *gorm.DB) error {
+	if err := tx.First(&p.Shop, "id = ?", p.ShopID).Error; err == gorm.ErrRecordNotFound {
 		return errors.New("Invalid ShopID: can't find shop")
-	} else if  tx.First(&p.Product).Error == gorm.ErrRecordNotFound {
+	} else if err != nil {
+		return err
+	}
+
+	if err := tx.First(&p.Product, "id = ?", p.ProductID).Error; err == gorm.ErrRecordNotFound {
 		return errors.New("Invalid ProductID: can't find product")
+	} else if err != nil {
+		return err
 	}
 
 	return nil

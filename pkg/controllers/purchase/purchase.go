@@ -1,8 +1,6 @@
 package purchase
 
 import (
-	"strings"
-
 	m "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 	"gorm.io/gorm"
 )

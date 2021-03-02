@@ -182,3 +182,18 @@ func TestFunc_MarshallJSON(t *testing.T) {
 	json.Unmarshal(data, &getP)
 	t.Log(getP)
 }
+
+func TestFunc_Create(t *testing.T) {
+	p := &purchase.Purchase{
+		ShopID:    2,
+		ProductID: 3,
+		Payment:   "cash",
+		Count:     2,
+		BuyDate: time.Now(),
+	}
+
+	if err := pc.Create(p); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+}

@@ -59,7 +59,7 @@ func TestFunc_Get(t *testing.T) {
 		ProductID: 29,
 		ShopID:    shopModel.ID,
 		BuyDate:   time.Now(),
-		Cost: 99999,
+		Cost:      99999,
 	}
 	if err := pc.Create(p); err != nil {
 		t.Log(err)
@@ -183,16 +183,16 @@ func TestFunc_MarshallJSON(t *testing.T) {
 	t.Log(getP)
 }
 
-func TestFunc_Create(t *testing.T) {
+func TestFunc_Create_CantFindShopID(t *testing.T) {
 	p := &purchase.Purchase{
-		ShopID:    2,
-		ProductID: 3,
+		ShopID:    1200,
+		ProductID: 29,
 		Payment:   "cash",
 		Count:     2,
-		BuyDate: time.Now(),
+		BuyDate:   time.Now(),
 	}
 
-	if err := pc.Create(p); err != nil {
+	if err := pc.Create(p); err != c.ErrInvalidShopID {
 		t.Log(err)
 		t.FailNow()
 	}

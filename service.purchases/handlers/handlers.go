@@ -203,6 +203,8 @@ func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 
 	p.UID = uid
 	p.BuyDate = time.Now()
+	// TODO change to float32
+	p.Cost = uint(p.Product.Cost) * p.Count
 	if err := ph.c.Create(p); err == pc.ErrInvalidShopID || err == pc.ErrInvalidProductID {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(err.Error()))

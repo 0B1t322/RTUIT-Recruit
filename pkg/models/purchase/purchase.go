@@ -2,6 +2,7 @@ package purchase
 
 import (
 	"encoding/json"
+	"errors"
 	"time"
 
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
@@ -102,6 +103,16 @@ func (p *Purchase) AfterFind(tx *gorm.DB) error {
 
 	if err := tx.Model(p).Association("Product").Find(&p.Product); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (p *Purchase) BeforeCreate(tx *gorm.DB) error {
+	if tx.First(&p.Shop).Error == gorm.ErrRecordNotFound {
+		return errors.New("Invalid ShopID: can't find shop")
+	} else if  tx.First(&p.Product).Error == gorm.ErrRecordNotFound {
+		return errors.New("Invalid ProductID: can't find product")
 	}
 
 	return nil

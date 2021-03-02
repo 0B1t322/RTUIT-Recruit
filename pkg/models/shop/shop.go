@@ -31,9 +31,9 @@ func AutoMigrate(db *gorm.DB) error {
 		return err
 	}
 
-	if err := db.AutoMigrate(&ShopInfo{}); err != nil {
-		return err
-	}
+	// if err := db.AutoMigrate(&ShopInfo{}); err != nil {
+	// 	return err
+	// }
 
 	if err := db.AutoMigrate(&ShopProduct{}); err != nil {
 		return err

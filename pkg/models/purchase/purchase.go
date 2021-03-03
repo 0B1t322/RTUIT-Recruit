@@ -131,6 +131,18 @@ func(p *Purchase) findShopAndProduct(tx *gorm.DB) error {
 		return err
 	}
 
+	var productID uint
+	if err := tx.Model(p.Shop.ShopProducts).
+				Where(
+					"shop_id = ? AND product_id = ?", 
+					p.Shop.ID, p.ProductID,
+				).Select("product_id").First(&productID).Error;
+				err == gorm.ErrRecordNotFound {
+					return errors.New("Invalid ProductID: can't find product")
+				} else if err != nil {
+					return err
+				}
+
 	if err := tx.First(&p.Product, "id = ?", p.ProductID).Error; err == gorm.ErrRecordNotFound {
 		return errors.New("Invalid ProductID: can't find product")
 	} else if err != nil {

@@ -37,9 +37,12 @@ var sc *s.ShopController
 func TestFunc_Get(t *testing.T) {
 	shopModel := &shop.Shop{
 		ShopInfo: shop.ShopInfo{
-			Name:        "shop_1",
+			Name:        "shop_5",
 			Adress:      "adress_1",
 			PhoneNubmer: "897612334334",
+		},
+		ShopProducts: []shop.ShopProduct {
+			{ProductID: 29},
 		},
 	}
 
@@ -60,6 +63,7 @@ func TestFunc_Get(t *testing.T) {
 		ShopID:    shopModel.ID,
 		BuyDate:   time.Now(),
 		Cost:      99999,
+		Count: 3,
 	}
 	if err := pc.Create(p); err != nil {
 		t.Log(err)
@@ -107,6 +111,9 @@ func TestFunc_GetAll(t *testing.T) {
 			Name:        "shop_2",
 			Adress:      "adress_1",
 			PhoneNubmer: "897612334334",
+		},
+		ShopProducts: []shop.ShopProduct {
+			{ProductID: 29},
 		},
 	}
 

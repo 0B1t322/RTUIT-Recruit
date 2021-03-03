@@ -141,7 +141,7 @@ func TestFunc_Get_NotFound(t *testing.T) {
 func TestFunc_Update(t *testing.T) {
 	s := &m.Shop{
 		ShopInfo: m.ShopInfo{
-			Name:        "shop_1",
+			Name:        "shop_update",
 			Adress:      "adress_1",
 			PhoneNubmer: "phone_1",
 		},
@@ -162,6 +162,7 @@ func TestFunc_Update(t *testing.T) {
 	}()
 
 	s.ShopProducts = append(s.ShopProducts, m.ShopProduct{ProductID: 31})
+	s.ShopProducts = append(s.ShopProducts, m.ShopProduct{ProductID: 45})
 
 	if err := sc.Update(s); err != nil {
 		t.Log(err)

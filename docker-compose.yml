@@ -12,13 +12,14 @@ services:
       MYSQL_PASSWORD: docker
     volumes:
       - "./db/scripts/recruit.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "wp-db:/var/lib/mysql:rw"
     networks: 
       - database
   service.purchases:
-    image: 0b1t322/service.purchases:level_1
+    image: 0b1t322/service.purchases
     container_name: service.purchases
     command: 
-      "./main -sk="sekret_key" "
+      "./main"
     ports: 
       - 8081:8081
     depends_on: 
@@ -29,3 +30,6 @@ services:
 networks: 
   database:
     driver: "bridge"
+
+volumes: 
+  wp-db: {}

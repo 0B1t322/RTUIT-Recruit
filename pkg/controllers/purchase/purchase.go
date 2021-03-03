@@ -64,9 +64,12 @@ func (pc *PurchaseController) Create(p *m.Purchase) error {
 		return ErrInvalidProductID
 	} else if err != nil && err.Error() == ErrInvalidShopID.Error() {
 		return ErrInvalidShopID
+	} else if err != nil && err.Error() == ErrCountNull.Error() {
+		return ErrCountNull
 	} else if err != nil {
 		return err
 	}
+	
 	return nil
 }
 

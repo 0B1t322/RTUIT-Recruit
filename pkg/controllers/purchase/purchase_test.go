@@ -113,7 +113,7 @@ func TestFunc_GetAll(t *testing.T) {
 			PhoneNubmer: "897612334334",
 		},
 		ShopProducts: []shop.ShopProduct{
-			{ProductID: 29},
+			{ProductID: 29, Count: 2},
 		},
 	}
 
@@ -129,6 +129,7 @@ func TestFunc_GetAll(t *testing.T) {
 			ShopID:    shopModel.ID,
 			ProductID: 29,
 			BuyDate:   time.Now(),
+			Count: 1,
 		}
 
 		if err := pc.Create(p); err != nil {
@@ -200,6 +201,70 @@ func TestFunc_Create_CantFindShopID(t *testing.T) {
 	}
 
 	if err := pc.Create(p); err != c.ErrInvalidShopID {
+		t.Log(err)
+		t.FailNow()
+	}
+}
+
+func TestFunc_Create_CountNeg(t *testing.T) {
+	shopModel := &shop.Shop{
+		ShopInfo: shop.ShopInfo{
+			Name:        "shop_5",
+			Adress:      "adress_1",
+			PhoneNubmer: "897612334334",
+		},
+		ShopProducts: []shop.ShopProduct{
+			{ProductID: 29, Count: 1},
+		},
+	}
+
+	if err := sc.Create(shopModel); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	defer sc.Delete(shopModel)
+
+	p := &purchase.Purchase{
+		ShopID:    shopModel.ID,
+		ProductID: 29,
+		Payment:   "cash",
+		Count:     2,
+		BuyDate:   time.Now(),
+	}
+
+	if err := pc.Create(p); err != s.ErrNegCount {
+		t.Log(err)
+		t.FailNow()
+	}
+}
+
+func TestFunc_Create_CountNull(t *testing.T) {
+	shopModel := &shop.Shop{
+		ShopInfo: shop.ShopInfo{
+			Name:        "shop_5",
+			Adress:      "adress_1",
+			PhoneNubmer: "897612334334",
+		},
+		ShopProducts: []shop.ShopProduct{
+			{ProductID: 29, Count: 1},
+		},
+	}
+
+	if err := sc.Create(shopModel); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	defer sc.Delete(shopModel)
+
+	p := &purchase.Purchase{
+		ShopID:    shopModel.ID,
+		ProductID: 29,
+		Payment:   "cash",
+		Count:     0,
+		BuyDate:   time.Now(),
+	}
+
+	if err := pc.Create(p); err != c.ErrCountNull {
 		t.Log(err)
 		t.FailNow()
 	}

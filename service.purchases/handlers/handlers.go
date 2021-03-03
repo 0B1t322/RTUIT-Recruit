@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	sc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/shop"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -203,10 +204,17 @@ func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 
 	p.UID = uid
 	p.BuyDate = time.Now()
-	// TODO change to float32
-	p.Cost = uint(p.Product.Cost) * p.Count
+
 	if err := ph.c.Create(p); err == pc.ErrInvalidShopID || err == pc.ErrInvalidProductID {
 		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(err.Error()))
+		return
+	} else if err == sc.ErrNegCount{
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	} else if err == pc.ErrCountNull {
+		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
 	} else if err != nil {

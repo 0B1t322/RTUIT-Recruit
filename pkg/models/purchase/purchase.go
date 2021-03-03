@@ -116,6 +116,10 @@ func (p *Purchase) AfterFind(tx *gorm.DB) error {
 
 
 func (p *Purchase) BeforeCreate(tx *gorm.DB) error {
+	if p.Count == 0 {
+		return errors.New("Count can't be null")
+	}
+	
 	if err := p.findShopAndProduct(tx); err != nil {
 		return err
 	}

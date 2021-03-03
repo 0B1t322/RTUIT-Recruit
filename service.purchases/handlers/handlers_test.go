@@ -3,7 +3,6 @@ package handlers_test
 import (
 	"crypto/sha512"
 
-	"github.com/0B1t322/RTUIT-Recruit/pkg/models/product"
 	p "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 
 	"bytes"
@@ -278,9 +277,7 @@ func TestFunc_GetAll(t *testing.T) {
 func TestFunc_GetAll_NotFound(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		data, err := json.Marshal(p.Purchase{
-			Product: product.Product{
-				Name: fmt.Sprintf("product_%v", i),
-			},
+			ProductID: 29,
 			ShopID: 9,
 			Payment: "cash",
 		})

@@ -33,6 +33,14 @@ github.com/0B1t322/RTUIT-Recruit v0.1.14 h1:IFqQ/K9CKty9MBZtR+7WVXnZqcIQaUKQ9iHj
 github.com/0B1t322/RTUIT-Recruit v0.1.14/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
 github.com/0B1t322/RTUIT-Recruit v0.1.16 h1:DsU6Dkd3LE9AnzHQ9YpW8UmfZPs3SRJHdjD5uawPD+c=
 github.com/0B1t322/RTUIT-Recruit v0.1.16/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
+github.com/0B1t322/RTUIT-Recruit v0.1.17 h1:q91dXUfruOauhj3HSDbmPw88gX9WRvv8x1G+KFDMCcc=
+github.com/0B1t322/RTUIT-Recruit v0.1.17/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
+github.com/0B1t322/RTUIT-Recruit v0.1.18 h1:TkniTRBkbaaxequZPE+2U8nAiNg0szhaPhL1adglkQk=
+github.com/0B1t322/RTUIT-Recruit v0.1.18/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
+github.com/0B1t322/RTUIT-Recruit v0.1.19 h1:q1xc4xERUBjHL6XaPqV9qNirFYYJPbKZBIE9HWsQnAA=
+github.com/0B1t322/RTUIT-Recruit v0.1.19/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
+github.com/0B1t322/RTUIT-Recruit v0.1.20 h1:6YOrmkEifHRjBFk4hDFyXOsZNJB1VgQtbXfHh08D64s=
+github.com/0B1t322/RTUIT-Recruit v0.1.20/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
 github.com/0B1t322/distanceLearningWebSite v0.0.0-20210211160901-f01e587d9046 h1:oTfB4JbgCzc7pUgZCbdKBbWcXYQqpaPlCQrQMeJuarY=
 github.com/0B1t322/distanceLearningWebSite v0.0.0-20210211160901-f01e587d9046/go.mod h1:jFy4y45c6TzzyDP9IxaEIJzlUZVyLRbWCndsx0r7tkU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=

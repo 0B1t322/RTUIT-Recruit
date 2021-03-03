@@ -60,9 +60,9 @@ func (pc *PurchaseController) GetAll(UID uint) ([]*m.Purchase, error)  {
 }
 
 func (pc *PurchaseController) Create(p *m.Purchase) error {
-	if err := pc.db.Create(p).Error; err.Error() == ErrInvalidProductID.Error() {
+	if err := pc.db.Create(p).Error; err != nil && err.Error() == ErrInvalidProductID.Error() {
 		return ErrInvalidProductID
-	} else if err.Error() == ErrInvalidShopID.Error() {
+	} else if err != nil && err.Error() == ErrInvalidShopID.Error() {
 		return ErrInvalidShopID
 	} else if err != nil {
 		return err

@@ -30,6 +30,21 @@ func (sc *ShopController) Get(ID uint) (*m.Shop, error) {
 	return s, nil
 }
 
+func (sc *ShopController) GetAll() ([]m.Shop, error) {
+	var shops []m.Shop
+
+	if err := sc.db.Find(&shops).Error; err != nil {
+		return nil, err
+	}
+
+	if len(shops) == 0 {
+		return nil, ErrNotFound
+	}
+
+	return shops, nil
+
+}
+
 func (sc *ShopController) Delete(s *m.Shop) error {
 	if err := sc.Controller.Delete(s); err != nil {
 		return err

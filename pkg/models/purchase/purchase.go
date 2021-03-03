@@ -1,6 +1,7 @@
 package purchase
 
 import (
+	sc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/shop"
 	"encoding/json"
 	"errors"
 	"time"
@@ -131,17 +132,21 @@ func(p *Purchase) findShopAndProduct(tx *gorm.DB) error {
 		return err
 	}
 
-	var productID uint
+	var product shop.ShopProduct
 	if err := tx.Model(p.Shop.ShopProducts).
 				Where(
 					"shop_id = ? AND product_id = ?", 
 					p.Shop.ID, p.ProductID,
-				).Select("product_id").First(&productID).Error;
+				).First(&product).Error;
 				err == gorm.ErrRecordNotFound {
 					return errors.New("Invalid ProductID: can't find product")
 				} else if err != nil {
 					return err
 				}
+	
+	if int(product.Count - p.Count) < 0 {
+		return sc.ErrNegCount
+	}
 
 	if err := tx.First(&p.Product, "id = ?", p.ProductID).Error; err == gorm.ErrRecordNotFound {
 		return errors.New("Invalid ProductID: can't find product")

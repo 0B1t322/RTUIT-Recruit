@@ -41,8 +41,8 @@ func TestFunc_Get(t *testing.T) {
 			Adress:      "adress_1",
 			PhoneNubmer: "897612334334",
 		},
-		ShopProducts: []shop.ShopProduct {
-			{ProductID: 29},
+		ShopProducts: []shop.ShopProduct{
+			{ProductID: 29, Count: 5},
 		},
 	}
 
@@ -63,7 +63,7 @@ func TestFunc_Get(t *testing.T) {
 		ShopID:    shopModel.ID,
 		BuyDate:   time.Now(),
 		Cost:      99999,
-		Count: 3,
+		Count:     3,
 	}
 	if err := pc.Create(p); err != nil {
 		t.Log(err)
@@ -112,7 +112,7 @@ func TestFunc_GetAll(t *testing.T) {
 			Adress:      "adress_1",
 			PhoneNubmer: "897612334334",
 		},
-		ShopProducts: []shop.ShopProduct {
+		ShopProducts: []shop.ShopProduct{
 			{ProductID: 29},
 		},
 	}

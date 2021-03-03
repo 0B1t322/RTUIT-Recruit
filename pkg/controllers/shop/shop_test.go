@@ -24,7 +24,7 @@ func init() {
 
 	sc = c.New(db)
 
-	if  err := p.AutoMigrate(db); err != nil {
+	if err := p.AutoMigrate(db); err != nil {
 		panic(err)
 	}
 
@@ -39,27 +39,27 @@ func init() {
 	pc := pc.New(db)
 
 	pc.Create(&p.Product{
-		ID: 29,
-		Name: "phone_1",
+		ID:           29,
+		Name:         "phone_1",
 		Desccription: "cool phone",
-		Cost: 13000,
-		Category: "Phone",
+		Cost:         13000,
+		Category:     "Phone",
 	})
 
 	pc.Create(&p.Product{
-		ID: 30,
-		Name: "phone_2",
+		ID:           30,
+		Name:         "phone_2",
 		Desccription: "coolest phone",
-		Cost: 15000,
-		Category: "Phone",
+		Cost:         15000,
+		Category:     "Phone",
 	})
 
 	pc.Create(&p.Product{
-		ID: 31,
-		Name: "phone_3",
+		ID:           31,
+		Name:         "phone_3",
 		Desccription: "more coolest phone",
-		Cost: 17000,
-		Category: "Phone",
+		Cost:         17000,
+		Category:     "Phone",
 	})
 
 }
@@ -89,8 +89,8 @@ func TestFunc_Create(t *testing.T) {
 		t.Log(err)
 		t.FailNow()
 	}
-	// 
-	// 
+	//
+	//
 }
 
 func TestFunc_Get(t *testing.T) {
@@ -110,7 +110,7 @@ func TestFunc_Get(t *testing.T) {
 		t.FailNow()
 	}
 	defer func() {
-		if err := sc.Delete(s);err != nil {
+		if err := sc.Delete(s); err != nil {
 			t.Log(err)
 			t.FailNow()
 		}
@@ -131,7 +131,7 @@ func TestFunc_Get(t *testing.T) {
 }
 
 func TestFunc_Get_NotFound(t *testing.T) {
-	_, err := sc.Get(1)
+	_, err := sc.Get(1290)
 	if err != c.ErrNotFound {
 		t.Log(err)
 		t.FailNow()
@@ -155,15 +155,15 @@ func TestFunc_Update(t *testing.T) {
 		t.FailNow()
 	}
 	defer func() {
-		if err := sc.Delete(s);err != nil {
+		if err := sc.Delete(s); err != nil {
 			t.Log(err)
 			t.FailNow()
 		}
 	}()
 
-	s.ShopProducts = append(s.ShopProducts, m.ShopProduct{ProductID: 31} )
+	s.ShopProducts = append(s.ShopProducts, m.ShopProduct{ProductID: 31})
 
-	if err := sc.Update(s); err !=  nil {
+	if err := sc.Update(s); err != nil {
 		t.Log(err)
 		t.FailNow()
 	}
@@ -187,12 +187,12 @@ func TestFunc_AddCount(t *testing.T) {
 		t.FailNow()
 	}
 	defer func() {
-		if err := sc.Delete(s);err != nil {
+		if err := sc.Delete(s); err != nil {
 			t.Log(err)
 			t.FailNow()
 		}
 	}()
-	
+
 	if err := sc.AddCount(s.ID, 29, 10); err != nil {
 		t.Log(err)
 		t.FailNow()
@@ -215,12 +215,12 @@ func TestFunc_AddCount_ProductNotFound(t *testing.T) {
 		t.FailNow()
 	}
 	defer func() {
-		if err := sc.Delete(s);err != nil {
+		if err := sc.Delete(s); err != nil {
 			t.Log(err)
 			t.FailNow()
 		}
 	}()
-	
+
 	if err := sc.AddCount(s.ID, 1, 10); err != c.ErrProductNotFound {
 		t.Log(err)
 		t.FailNow()
@@ -243,18 +243,18 @@ func TestFunc_SubCount(t *testing.T) {
 		t.FailNow()
 	}
 	defer func() {
-		if err := sc.Delete(s);err != nil {
+		if err := sc.Delete(s); err != nil {
 			t.Log(err)
 			t.FailNow()
 		}
 	}()
 
-	if err := sc.AddCount(s.ID, 29,1); err != nil {
+	if err := sc.AddCount(s.ID, 29, 1); err != nil {
 		t.Log(err)
 		t.FailNow()
 	}
 
-	if err := sc.SubCount(s.ID, 29,1); err != nil {
+	if err := sc.SubCount(s.ID, 29, 1); err != nil {
 		t.Log(err)
 		t.FailNow()
 	}
@@ -276,13 +276,13 @@ func TestFunc_SubCount_ErrNegCount(t *testing.T) {
 		t.FailNow()
 	}
 	defer func() {
-		if err := sc.Delete(s);err != nil {
+		if err := sc.Delete(s); err != nil {
 			t.Log(err)
 			t.FailNow()
 		}
 	}()
 
-	if err := sc.SubCount(s.ID, 29,1); err != c.ErrNegCount {
+	if err := sc.SubCount(s.ID, 29, 1); err != c.ErrNegCount {
 		t.Log(err)
 		t.FailNow()
 	}

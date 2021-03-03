@@ -112,8 +112,16 @@ func (p *Purchase) AfterFind(tx *gorm.DB) error {
 	return nil
 }
 
+
+
 func (p *Purchase) BeforeCreate(tx *gorm.DB) error {
-	return p.findShopAndProduct(tx)
+	if err := p.findShopAndProduct(tx); err != nil {
+		return err
+	}
+
+	p.Cost = p.Count * uint(p.Product.Cost)
+
+	return nil
 }
 
 func(p *Purchase) findShopAndProduct(tx *gorm.DB) error {

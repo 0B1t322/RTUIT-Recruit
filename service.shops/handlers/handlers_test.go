@@ -1,13 +1,18 @@
 package handlers_test
 
 import (
-	"github.com/0B1t322/RTUIT-Recruit/pkg/controllers/purchase"
+	"encoding/hex"
+	"fmt"
 	"bytes"
+	"crypto/sha512"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
+
+	"github.com/0B1t322/RTUIT-Recruit/pkg/controllers/purchase"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/middlewares"
 
 	pm "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 
@@ -311,4 +316,75 @@ func TestFunc_GetAll(t *testing.T) {
 	}
 
 	t.Log(w.Body.String())
+}
+
+func TestFunc_AddProduct(t *testing.T) {
+	// REQUIRE product with id 3 in db
+	r, err := http.NewRequest("POST", "/shops/1/3", nil)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	setAuthHeader(r)
+	w := httptest.NewRecorder()
+
+	route.ServeHTTP(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Log(w.Code)
+		t.Log(w.Body.String())
+		t.FailNow()
+	}
+}
+
+func TestFunc_AddProduct_NotFound(t *testing.T) {
+	r, err := http.NewRequest("POST", "/shops/2/3", nil)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	setAuthHeader(r)
+	w := httptest.NewRecorder()
+
+	route.ServeHTTP(w, r)
+
+	if w.Code != http.StatusNotFound {
+		t.Log(w.Code)
+		t.Log(w.Body.String())
+		t.FailNow()
+	}
+}
+
+func TestFunc_AddProduct_BadRequest(t *testing.T) {
+	r, err := http.NewRequest("POST", "/shops/1/4", nil)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	setAuthHeader(r)
+	w := httptest.NewRecorder()
+
+	route.ServeHTTP(w, r)
+
+	if w.Code != http.StatusBadRequest {
+		t.Log(w.Code)
+		t.Log(w.Body.String())
+		t.FailNow()
+	}
+}
+
+
+
+func setAuthHeader(req *http.Request) {
+	sha := sha512.New()
+	sha.Write([]byte(middlewares.SecretKey))
+
+	data := sha.Sum(nil)
+
+	token := fmt.Sprintf("Token %s", hex.EncodeToString(data))
+
+	req.Header.Add("Authorization", token)
 }

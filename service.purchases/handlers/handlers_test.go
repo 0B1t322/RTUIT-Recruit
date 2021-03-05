@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	h "github.com/0B1t322/RTUIT-Recruit/service.purchases/handlers"
 	"crypto/sha512"
 
 	p "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
@@ -26,7 +27,7 @@ func init() {
 		panic(err)
 	}
 
-	r = router.New(db)
+	r = router.New(h.New(db))
 
 	sha := sha512.New()
 	sha.Write([]byte("my_secret_key"))

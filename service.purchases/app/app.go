@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/0B1t322/RTUIT-Recruit/service.purchases/handlers"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/app"
 	"github.com/sirupsen/logrus"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/middlewares"
@@ -34,7 +35,9 @@ func New(DB *gorm.DB, Port string) app.App {
 	return &App{
 		db: DB,
 		port: Port,
-		r: router.New(DB),
+		r: router.New(
+			handlers.New(DB),
+		),
 	}
 }
 

@@ -95,6 +95,8 @@ func addCount(
 	ShopID, ProductID uint,
 	add func(old uint) int,
 ) error {
+	// TODO think of how check if shop not exist
+	// or product
 	tx := db.Model(m.ShopProduct{}).
 				Where(
 					"shop_id = ? AND product_ID = ?",

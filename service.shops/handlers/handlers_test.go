@@ -1,6 +1,7 @@
 package handlers_test
 
 import (
+	h "github.com/0B1t322/RTUIT-Recruit/service.shops/handlers"
 	"encoding/hex"
 	"fmt"
 	"bytes"
@@ -29,8 +30,9 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	const purNet = "http://localhost:8081"
 
-	route = router.New(db)
+	route = router.New(h.New(db, purNet))
 }
 
 var route *mux.Router
@@ -377,6 +379,24 @@ func TestFunc_AddProduct_BadRequest(t *testing.T) {
 }
 
 
+func TestFunc_AddCount(t *testing.T) {
+	r, err := http.NewRequest("PUT", "/shops/1/3/2", nil)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	setAuthHeader(r)
+	w := httptest.NewRecorder()
+
+	route.ServeHTTP(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Log(w.Code)
+		t.Log(w.Body.String())
+		t.FailNow()
+	}
+}
 
 func setAuthHeader(req *http.Request) {
 	sha := sha512.New()

@@ -1,18 +1,15 @@
 package router
 
 import (
+	h "github.com/0B1t322/RTUIT-Recruit/service.shops/shophandler"
 	"net/http"
 
 	"github.com/0B1t322/RTUIT-Recruit/pkg/middlewares"
-	"github.com/0B1t322/RTUIT-Recruit/service.shops/handlers"
 	"github.com/gorilla/mux"
-	"gorm.io/gorm"
 )
 
-func New(db *gorm.DB) *mux.Router {
+func New(h h.ShopHandler) *mux.Router {
 	r := mux.NewRouter()
-	h := handlers.New(db)
-	h.PurhacesNetwork = "http://localhost:8081"
 	// Get Shop
 	r.HandleFunc("/shops/{id:[0-9]+}", h.Get).Methods("GET")
 

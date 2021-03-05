@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"github.com/0B1t322/RTUIT-Recruit/pkg/controllers/product"
-	m "github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
 	"bytes"
 	"crypto/sha512"
 	"encoding/hex"
@@ -14,6 +12,10 @@ import (
 	"net/http"
 	u "net/url"
 	"strconv"
+
+	"github.com/0B1t322/RTUIT-Recruit/pkg/controllers/product"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/controllers/shop"
+	m "github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
 
 	pc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/purchase"
 
@@ -30,12 +32,12 @@ import (
 type ShopHandler struct {
 	c 				*sc.ShopController
 	PurhacesNetwork	string
-	AuthKey			string
 }
 
-func New(db *gorm.DB) *ShopHandler {
+func New(db *gorm.DB, PurhacesNetwork string) *ShopHandler {
 	return &ShopHandler{
 		c: sc.New(db),
+		PurhacesNetwork: PurhacesNetwork,
 	}
 }
 
@@ -198,7 +200,7 @@ func (sh *ShopHandler) AddCount(w http.ResponseWriter, r *http.Request) {
 	productID := getProductID(vars)
 	count := getCount(vars)
 
-	if err := sh.c.AddCount(id, productID, count); err == product.ErrNotFound {
+	if err := sh.c.AddCount(id, productID, count); err == shop.ErrProductNotFound {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return

@@ -26,7 +26,7 @@ func New(h h.ShopHandler) *mux.Router {
 			middlewares.CheckTokenIfFromService(
 				http.HandlerFunc(h.AddCount),
 			),
-		).Methods("PUT")
+	).Methods("PUT")
 
 	// Add product to shop
 	r.Handle(
@@ -34,10 +34,20 @@ func New(h h.ShopHandler) *mux.Router {
 			middlewares.CheckTokenIfFromService(
 				http.HandlerFunc(h.AddProduct),
 			),
-		).Methods("POST")
+	).Methods("POST")
 
 	// Get All Shop
 	r.HandleFunc("/shops", h.GetAll).Methods("GET")
-
+	
+	// Create new shop
+	r.Handle(
+			"/shops/", 
+			middlewares.CheckTokenIfFromService(
+				http.HandlerFunc(
+					h.CreateShop,
+				),
+			),
+	).Methods("POST")
+	
 	return r
 }

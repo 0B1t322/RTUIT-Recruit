@@ -211,6 +211,34 @@ func (sh *ShopHandler) AddCount(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (sh *ShopHandler) CreateShop(w http.ResponseWriter, r *http.Request) {
+	s := m.ShopInfo{}
+
+	d := json.NewDecoder(r.Body)
+	if err := d.Decode(&s); err != nil {
+		logAndWriteAboutInternalError(w, err, "CreateShop")
+		return
+	}
+
+	shop := &m.Shop{ShopInfo: s}
+	if err := sh.c.Create(shop); err == sc.ErrExist {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
+		return
+	} else if err != nil {
+		logAndWriteAboutInternalError(w, err, "CreateShop")
+		return
+	}
+
+	data, err := json.Marshal(s.ID)
+	if err != nil {
+		logAndWriteAboutInternalError(w, err, "CreateShop")
+		return
+	}
+
+	w.Write(data)
+}
+
 func getShopID(v map[string]string) uint {
 	return getUINT(v, "id")
 }

@@ -4,6 +4,7 @@ import (
 	m "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
 	"gorm.io/gorm"
 )
+// TODO base controller struct
 
 type PurchaseController struct {
 	db *gorm.DB
@@ -15,7 +16,7 @@ func New(db *gorm.DB) *PurchaseController {
 	return pc
 }
 
-func (pc *PurchaseController) Get(ID string) (*m.Purchase, error) {
+func (pc *PurchaseController) Get(ID uint) (*m.Purchase, error) {
 	p := &m.Purchase{}	
 	if err := pc.db.First(p, "ID = ?", ID).Error; err == gorm.ErrRecordNotFound {
 		return nil, ErrNotFound
@@ -23,10 +24,18 @@ func (pc *PurchaseController) Get(ID string) (*m.Purchase, error) {
 		return nil, err
 	}
 
+	// if err := pc.db.Model(p).Association("Shop").Find(&p.Shop); err != nil {
+	// 	return nil, err
+	// }
+
+	// if err := pc.db.Model(p).Association("Product").Find(&p.Product); err != nil {
+	// 	return nil, err
+	// }
+
 	return p, nil
 }
 
-func (pc *PurchaseController) GetAll(UID string) ([]*m.Purchase, error)  {
+func (pc *PurchaseController) GetAll(UID uint) ([]*m.Purchase, error)  {
 	p := []*m.Purchase{}
 
 	err := pc.db.Find(&p, "UID = ?", UID).Error
@@ -39,17 +48,32 @@ func (pc *PurchaseController) GetAll(UID string) ([]*m.Purchase, error)  {
 		return nil, ErrNotFound
 	}
 
+	// if err := pc.db.Model(p).Association("Shop").Find(&p.Shop); err != nil {
+	// 	return nil, err
+	// }
+
+	// if err := pc.db.Model(p).Association("Product").Find(&p.Product); err != nil {
+	// 	return nil, err
+	// }
+
 	return p, nil
 }
 
 func (pc *PurchaseController) Create(p *m.Purchase) error {
-	if err := pc.db.Create(p).Error; err != nil {
+	if err := pc.db.Create(p).Error; err != nil && err.Error() == ErrInvalidProductID.Error() {
+		return ErrInvalidProductID
+	} else if err != nil && err.Error() == ErrInvalidShopID.Error() {
+		return ErrInvalidShopID
+	} else if err != nil && err.Error() == ErrCountNull.Error() {
+		return ErrCountNull
+	} else if err != nil {
 		return err
 	}
-
+	
 	return nil
 }
 
+// TODO  maybe delete this because it's not to be updated
 func (pc *PurchaseController) Update(p *m.Purchase) error {
 	if err := pc.db.Updates(p).Error; err != nil {
 		return err

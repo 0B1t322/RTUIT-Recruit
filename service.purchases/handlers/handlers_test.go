@@ -1,7 +1,13 @@
 package handlers_test
 
 import (
+	h "github.com/0B1t322/RTUIT-Recruit/service.purchases/handlers"
+	"crypto/sha512"
+
+	p "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
+
 	"bytes"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -21,19 +27,23 @@ func init() {
 		panic(err)
 	}
 
-	r = router.New(db)
+	r = router.New(h.New(db))
+
+	sha := sha512.New()
+	sha.Write([]byte("my_secret_key"))
+	authHead = "Token " + hex.EncodeToString(sha.Sum(nil))
+	println(authHead)
 }
 
-
 var r *mux.Router
+var authHead string
 
 func TestFunc_Add(t *testing.T) {
-	data, err := json.Marshal(struct{
-		ProductName 	string `json:"product_name"`
-		Cost			float64 `json:"cost"`
-	} {
-		"product_4",
-		213,
+	data, err := json.Marshal(p.Purchase{
+		ProductID: 29,
+		ShopID:    9,
+		Payment:   "cash",
+		Count:     1,
 	})
 	if err != nil {
 		t.Log(err)
@@ -41,12 +51,14 @@ func TestFunc_Add(t *testing.T) {
 	}
 
 	req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
+	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
-	r.ServeHTTP(w,req)
+	r.ServeHTTP(w, req)
 
 	if w.Code != http.StatusCreated {
 		t.Log(w.Code)
+		t.Log(w.Body.String())
 		t.FailNow()
 	}
 
@@ -60,24 +72,24 @@ func TestFunc_Add(t *testing.T) {
 	t.Logf("Added with id: %v\n", ID)
 
 	defer func() {
-		req := httptest.NewRequest("DELETE", "/purchases/1/" + fmt.Sprint(ID), nil)
+		req := httptest.NewRequest("DELETE", "/purchases/1/"+fmt.Sprint(ID), nil)
+		req.Header.Set("Authorization", authHead)
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
 
-		if w.Code !=  http.StatusOK {
+		if w.Code != http.StatusOK {
 			t.Log(w.Code)
 			t.FailNow()
 		}
 	}()
 }
 
-func TestFunc_Get(t *testing.T) {
-	data, err := json.Marshal(struct{
-		ProductName 	string `json:"product_name"`
-		Cost			float64 `json:"cost"`
-	} {
-		"product_2",
-		229,
+func TestFunc_Add_BadRequest_NegCount(t *testing.T) {
+	data, err := json.Marshal(p.Purchase{
+		ProductID: 29,
+		ShopID:    9,
+		Payment:   "cash",
+		Count:     121,
 	})
 	if err != nil {
 		t.Log(err)
@@ -85,9 +97,66 @@ func TestFunc_Get(t *testing.T) {
 	}
 
 	req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
+	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
-	r.ServeHTTP(w,req)
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Log(w.Code)
+		t.FailNow()
+	}
+
+	t.Log(w.Body.String())
+}
+
+func TestFunc_Add_BadRequest_CountNull(t *testing.T) {
+	data, err := json.Marshal(p.Purchase{
+		ProductID: 29,
+		ShopID:    9,
+		Payment:   "cash",
+		Count:     0,
+	})
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
+	req.Header.Set("Authorization", authHead)
+	w := httptest.NewRecorder()
+
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Log(w.Code)
+		t.FailNow()
+	}
+
+	t.Log(w.Body.String())
+}
+
+func TestFunc_Get(t *testing.T) {
+	data, err := json.Marshal(p.Purchase{
+		ProductID: 29,
+		ShopID:    9,
+		Payment:   "cash",
+		Count: 1,
+	})
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
+	req.Header.Set("Authorization", authHead)
+	w := httptest.NewRecorder()
+
+	r.ServeHTTP(w, req)
 
 	if w.Code != http.StatusCreated {
 		t.Log(w.Code)
@@ -101,11 +170,12 @@ func TestFunc_Get(t *testing.T) {
 		t.FailNow()
 	}
 	defer func() {
-		req := httptest.NewRequest("DELETE", "/purchases/1/" + fmt.Sprint(ID), nil)
+		req := httptest.NewRequest("DELETE", "/purchases/1/"+fmt.Sprint(ID), nil)
+		req.Header.Set("Authorization", authHead)
 		w := httptest.NewRecorder()
 		r.ServeHTTP(w, req)
 
-		if w.Code !=  http.StatusOK {
+		if w.Code != http.StatusOK {
 			t.Log(w.Code)
 			t.FailNow()
 		}
@@ -114,6 +184,7 @@ func TestFunc_Get(t *testing.T) {
 	t.Logf("Added with id: %v\n", ID)
 
 	req = httptest.NewRequest("GET", fmt.Sprintf("/purchases/1/%v", ID), nil)
+	req.Header.Set("Authorization", authHead)
 	w = httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -124,10 +195,12 @@ func TestFunc_Get(t *testing.T) {
 	}
 
 	t.Log(w.Body.String())
+	//
 }
 
 func TestFunc_Get_NotFound(t *testing.T) {
 	req := httptest.NewRequest("GET", fmt.Sprintf("/purchases/10/12"), nil)
+	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -138,21 +211,21 @@ func TestFunc_Get_NotFound(t *testing.T) {
 	}
 
 	add := func() (uint, func()) {
-		data, err := json.Marshal(struct{
-			ProductName 	string `json:"product_name"`
-			Cost			float64 `json:"cost"`
-		} {
-			"product_2",
-			229,
+		data, err := json.Marshal(p.Purchase{
+			ProductID: 29,
+			ShopID:    9,
+			Payment:   "cash",
+			Count: 1,
 		})
 		if err != nil {
 			t.Log(err)
 			t.FailNow()
 		}
 		req := httptest.NewRequest("POST", "/purchases/2", bytes.NewReader(data))
+		req.Header.Set("Authorization", authHead)
 		w := httptest.NewRecorder()
 
-		r.ServeHTTP(w,req)
+		r.ServeHTTP(w, req)
 
 		if w.Code != http.StatusCreated {
 			t.Log(w.Code)
@@ -168,7 +241,8 @@ func TestFunc_Get_NotFound(t *testing.T) {
 		t.Logf("Added with id: %v\n", ID)
 
 		return ID, (func() {
-			req := httptest.NewRequest("DELETE", "/purchases/2/" + fmt.Sprint(ID), nil)
+			req := httptest.NewRequest("DELETE", "/purchases/2/"+fmt.Sprint(ID), nil)
+			req.Header.Set("Authorization", authHead)
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, req)
 
@@ -182,7 +256,8 @@ func TestFunc_Get_NotFound(t *testing.T) {
 	id, del := add()
 	defer del()
 
-	req = httptest.NewRequest("GET", fmt.Sprintf("/purchases/10/" + fmt.Sprint(id)), nil)
+	req = httptest.NewRequest("GET", fmt.Sprintf("/purchases/10/"+fmt.Sprint(id)), nil)
+	req.Header.Set("Authorization", authHead)
 	w = httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -195,22 +270,26 @@ func TestFunc_Get_NotFound(t *testing.T) {
 
 func TestFunc_GetAll(t *testing.T) {
 	for i := 0; i < 10; i++ {
-		data, err := json.Marshal(struct{
-			ProductName 	string `json:"product_name"`
-			Cost			float64 `json:"cost"`
-		} {
-			fmt.Sprintf("product_%v",i),
-			240,
+		data, err := json.Marshal(p.Purchase{
+			ProductID: 29,
+			ShopID:    9,
+			Payment:   "cash",
+			Count: 1,
 		})
+		if err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
 		if err != nil {
 			t.Log(err)
 			t.FailNow()
 		}
 
 		req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
+		req.Header.Set("Authorization", authHead)
 		w := httptest.NewRecorder()
 
-		r.ServeHTTP(w,req)
+		r.ServeHTTP(w, req)
 
 		if w.Code != http.StatusCreated {
 			t.Log(w.Code)
@@ -224,11 +303,12 @@ func TestFunc_GetAll(t *testing.T) {
 			t.FailNow()
 		}
 		defer func() {
-			req := httptest.NewRequest("DELETE", "/purchases/1/" + fmt.Sprint(ID), nil)
+			req := httptest.NewRequest("DELETE", "/purchases/1/"+fmt.Sprint(ID), nil)
+			req.Header.Set("Authorization", authHead)
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, req)
 
-			if w.Code !=  http.StatusOK {
+			if w.Code != http.StatusOK {
 				t.Log(w.Code)
 				t.FailNow()
 			}
@@ -236,6 +316,7 @@ func TestFunc_GetAll(t *testing.T) {
 	}
 
 	req := httptest.NewRequest("GET", "/purchases/1", nil)
+	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
@@ -250,22 +331,18 @@ func TestFunc_GetAll(t *testing.T) {
 
 func TestFunc_GetAll_NotFound(t *testing.T) {
 	for i := 0; i < 10; i++ {
-		data, err := json.Marshal(struct{
-			ProductName 	string `json:"product_name"`
-			Cost			float64 `json:"cost"`
-		} {
-			fmt.Sprintf("product_%v",i),
-			240,
+		data, err := json.Marshal(p.Purchase{
+			ProductID: 29,
+			ShopID:    9,
+			Payment:   "cash",
+			Count: 1,
 		})
-		if err != nil {
-			t.Log(err)
-			t.FailNow()
-		}
 
 		req := httptest.NewRequest("POST", "/purchases/1", bytes.NewReader(data))
+		req.Header.Set("Authorization", authHead)
 		w := httptest.NewRecorder()
 
-		r.ServeHTTP(w,req)
+		r.ServeHTTP(w, req)
 
 		if w.Code != http.StatusCreated {
 			t.Log(w.Code)
@@ -279,22 +356,24 @@ func TestFunc_GetAll_NotFound(t *testing.T) {
 			t.FailNow()
 		}
 		defer func() {
-			req := httptest.NewRequest("DELETE", "/purchases/1/" + fmt.Sprint(ID), nil)
+			req := httptest.NewRequest("DELETE", "/purchases/1/"+fmt.Sprint(ID), nil)
+			req.Header.Set("Authorization", authHead)
 			w := httptest.NewRecorder()
 			r.ServeHTTP(w, req)
 
-			if w.Code !=  http.StatusOK {
+			if w.Code != http.StatusOK {
 				t.Log(w.Code)
 				t.FailNow()
 			}
 		}()
 	}
 
-	req := httptest.NewRequest("GET", "/purchases/2", nil)
+	req := httptest.NewRequest("GET", "/purchases/100", nil)
+	req.Header.Set("Authorization", authHead)
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)
-
+	t.Log(w.Body.String())
 	if w.Code != http.StatusNotFound {
 		t.Log(w.Code)
 		t.FailNow()

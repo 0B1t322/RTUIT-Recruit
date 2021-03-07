@@ -440,6 +440,8 @@ func TestFunc_CreateShop(t *testing.T) {
 		t.Log(w.Code)
 		t.FailNow()
 	}
+
+	t.Log(w.Body.String())
 }
 
 func TestFunc_CreateShop_BadReq(t *testing.T) {

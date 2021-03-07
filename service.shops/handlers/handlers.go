@@ -230,7 +230,7 @@ func (sh *ShopHandler) CreateShop(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	data, err := json.Marshal(s.ID)
+	data, err := json.Marshal(shop.ID)
 	if err != nil {
 		logAndWriteAboutInternalError(w, err, "CreateShop")
 		return

@@ -1,16 +1,4 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
-github.com/0B1t322/RTUIT-Recruit v0.1.16 h1:DsU6Dkd3LE9AnzHQ9YpW8UmfZPs3SRJHdjD5uawPD+c=
-github.com/0B1t322/RTUIT-Recruit v0.1.16/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
-github.com/0B1t322/RTUIT-Recruit v0.1.17 h1:q91dXUfruOauhj3HSDbmPw88gX9WRvv8x1G+KFDMCcc=
-github.com/0B1t322/RTUIT-Recruit v0.1.17/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
-github.com/0B1t322/RTUIT-Recruit v0.1.20 h1:6YOrmkEifHRjBFk4hDFyXOsZNJB1VgQtbXfHh08D64s=
-github.com/0B1t322/RTUIT-Recruit v0.1.20/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
-github.com/0B1t322/RTUIT-Recruit v0.1.21 h1:GqfQ0Pk1g5lfDFh+lN6c7h+nj1/VFUi1SKCFHzU0GJA=
-github.com/0B1t322/RTUIT-Recruit v0.1.21/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
-github.com/0B1t322/RTUIT-Recruit v0.1.22 h1:KTE7L1z1gKF+CzfvJxJrRH45KnhdXgqINqDq7T2NYHQ=
-github.com/0B1t322/RTUIT-Recruit v0.1.22/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
-github.com/0B1t322/RTUIT-Recruit v0.1.23 h1:LnJOr/VpCy8yVvrxU08yKWORMuml2fapkAIFaaH4PJc=
-github.com/0B1t322/RTUIT-Recruit v0.1.23/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
 github.com/0B1t322/RTUIT-Recruit v0.1.24 h1:TYDY/ml1gLqO/MYFB1h4vHoQ3USTWfiFC9kYuvmKC/8=
 github.com/0B1t322/RTUIT-Recruit v0.1.24/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
 github.com/0B1t322/distanceLearningWebSite v0.0.0-20210211160901-f01e587d9046 h1:oTfB4JbgCzc7pUgZCbdKBbWcXYQqpaPlCQrQMeJuarY=

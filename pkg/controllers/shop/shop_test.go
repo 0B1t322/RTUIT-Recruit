@@ -93,6 +93,35 @@ func TestFunc_Create(t *testing.T) {
 	//
 }
 
+func TestFunc_Create_Error(t *testing.T) {
+	s := &m.Shop{
+		ShopInfo: m.ShopInfo{
+			Name:        "shop_3",
+			Adress:      "adress_1",
+			PhoneNubmer: "phone_1",
+		},
+		ShopProducts: []m.ShopProduct{
+			{ProductID: 29},
+		},
+	}
+
+	if err := sc.Create(s); err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	defer func() {
+		if err := sc.Delete(s); err != nil {
+			t.Log(err)
+			t.FailNow()
+		}
+	}()
+
+	if err := sc.Create(s); err != c.ErrExist {
+		t.Log(err)
+		t.FailNow()
+	}
+}
+
 func TestFunc_Get(t *testing.T) {
 	s := &m.Shop{
 		ShopInfo: m.ShopInfo{

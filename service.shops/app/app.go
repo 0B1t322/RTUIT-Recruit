@@ -42,11 +42,12 @@ func (a *App) Start() error {
 
 func (a *App) init() error {
 	middlewares.Logger = logrus.StandardLogger()
-	if err := shop.AutoMigrate(a.db); err != nil {
+
+	if err := product.AutoMigrate(a.db); err != nil {
 		return err
 	}
 
-	if err := product.AutoMigrate(a.db); err != nil {
+	if err := shop.AutoMigrate(a.db); err != nil {
 		return err
 	}
 

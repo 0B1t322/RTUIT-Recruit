@@ -1,21 +1,23 @@
 package handlers_test
 
 import (
-	h "github.com/0B1t322/RTUIT-Recruit/service.shops/handlers"
-	"encoding/hex"
-	"fmt"
 	"bytes"
 	"crypto/sha512"
+	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 
+	h "github.com/0B1t322/RTUIT-Recruit/service.shops/handlers"
+
 	"github.com/0B1t322/RTUIT-Recruit/pkg/controllers/purchase"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/middlewares"
 
 	pm "github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
+	"github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
 
 	"github.com/0B1t322/RTUIT-Recruit/service.shops/router"
 
@@ -407,4 +409,68 @@ func setAuthHeader(req *http.Request) {
 	token := fmt.Sprintf("Token %s", hex.EncodeToString(data))
 
 	req.Header.Add("Authorization", token)
+}
+
+func TestFunc_CreateShop(t *testing.T) {
+	s := &shop.ShopInfo{
+		Adress: "some_adress",
+		Name: "some_shop",
+		PhoneNubmer: "8991234567",
+	}
+	data, err := json.Marshal(s)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	b := bytes.NewReader(data)
+
+	r, err := http.NewRequest("POST", "/shops/", b)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	setAuthHeader(r)
+
+	w := httptest.NewRecorder()
+
+	route.ServeHTTP(w, r)
+
+	if w.Code != http.StatusOK {
+		t.Log(w.Code)
+		t.FailNow()
+	}
+
+	t.Log(w.Body.String())
+}
+
+func TestFunc_CreateShop_BadReq(t *testing.T) {
+	s := &shop.ShopInfo{
+		Adress: "some_adress",
+		Name: "some_shop",
+		PhoneNubmer: "8991234567",
+	}
+	data, err := json.Marshal(s)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+	b := bytes.NewReader(data)
+
+	r, err := http.NewRequest("POST", "/shops/", b)
+	if err != nil {
+		t.Log(err)
+		t.FailNow()
+	}
+
+	setAuthHeader(r)
+
+	w := httptest.NewRecorder()
+
+	route.ServeHTTP(w, r)
+
+	if w.Code != http.StatusBadRequest {
+		t.Log(w.Code)
+		t.FailNow()
+	}
 }

@@ -1,6 +1,7 @@
 package shop
 
 import (
+	"regexp"
 	m "github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/controllers/controller"
 	"gorm.io/gorm"
@@ -55,10 +56,22 @@ func (sc *ShopController) Delete(s *m.Shop) error {
 
 func (sc *ShopController) Create(s *m.Shop) error {
 	if err := sc.Controller.Create(s); err != nil {
-		return err
+		return sc.checkIfExist(err)
 	}
 
 	return nil
+}
+
+func (sc *ShopController) checkIfExist(err error) error {
+	const pattern = "^.+: Duplicate entry '.*' for key '.*'$"
+
+	re := regexp.MustCompile(pattern)
+
+	if re.MatchString(err.Error()) {
+		return ErrExist
+	}
+
+	return err
 }
 
 // Update  update only shop basic  field

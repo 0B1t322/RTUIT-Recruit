@@ -11,4 +11,5 @@ type ShopHandler interface {
 	GetAll(w http.ResponseWriter, r *http.Request)
 	AddProduct(w http.ResponseWriter, r *http.Request)
 	AddCount(w http.ResponseWriter, r *http.Request)
+	CreateShop(w http.ResponseWriter, r *http.Request)
 }

@@ -8,4 +8,5 @@ var (
 	ErrNotFound  		= errors.New("Shop not found")
 	ErrNegCount			= errors.New("Count can't be negative")
 	ErrProductNotFound	= errors.New("Product not found")
+	ErrExist			= errors.New("Shop with this name exist")
 )

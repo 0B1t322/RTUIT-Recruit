@@ -306,3 +306,23 @@ return all shops
     }
 ]
 ```
+
+## POST /shops/
+Create shop
+if shop with this name exisr return 400
+if create return status 200
+
+### Example
+/shops/
+body:
+```json
+{
+    "name": "name_of_some_shop_1",
+    "adress": "adress_of_some_shop",
+    "phone_number": "89991234567"
+}
+```
+answer:
+```
+15
+```

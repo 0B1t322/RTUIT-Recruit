@@ -26,6 +26,18 @@ services:
       - db
     networks: 
       - database
+  service.shops:
+    image: 0b1t322/service.shops
+    container_name: service.shops
+    command: 
+      "./main"
+    ports: 
+      - "8082:8082"
+    depends_on: 
+      - db
+      - service.purchases
+    networks: 
+      - database
 
 networks: 
   database:

@@ -209,11 +209,7 @@ func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(err.Error()))
 		return
-	} else if err == sc.ErrNegCount{
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(err.Error()))
-		return
-	} else if err == pc.ErrCountNull {
+	} else if err == sc.ErrNegCount || err == pc.ErrCountNull{
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return

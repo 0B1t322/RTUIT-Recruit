@@ -1,0 +1,27 @@
+{
+    "products": [
+        {
+            "name": "iPhone X 256 GB",
+            "description": "Apple iphone with 256 GB",
+            "cost": 70000,
+            "category": "Phones"
+        },
+        {
+            "name": "iPhone X 512 GB",
+            "description": "Apple iphone with 512 GB",
+            "cost": 90000,
+            "category": "Phones"
+        },
+        {
+            "name": "MacBook 16 ARM 1TB",
+            "description": "MacBook 16 ARM with 32GB RAM",
+            "cost": 200000,
+            "category": "Laptops"
+        }
+    ],
+    "production_capisity": "15s",
+    "product_per_cap": 2,
+    "shop_network": "http://service.shops:8082",
+    "update_time": "3s",
+    "delivery_time": "2s"
+}

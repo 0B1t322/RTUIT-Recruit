@@ -1,44 +1,58 @@
 package factory
 
 import (
+	log "github.com/sirupsen/logrus"
 	"sync"
 )
 
 type Warehouse struct {
-	mu sync.Mutex
-	prodcutsCount map[uint]uint
+	prodcutsCount sync.Map
+	// mu sync.RWMutex
 }
 
 func NewWarehouse() *Warehouse {
 	return &Warehouse{
-		prodcutsCount: make(map[uint]uint),
+		prodcutsCount: sync.Map{},
 	}
 }
 
 type Warehouser interface {
 	AddProduct(productID, count uint)
-	TakeAllProducts(productID uint) uint
+	TakeProduct(productID uint ) <- chan uint8
 }
 
 func (w *Warehouse) AddProduct(productID, count uint) {
-	w.mu.Lock()
-
-	w.prodcutsCount[productID] += count
-
-	w.mu.Unlock()
-}
-
-func (w *Warehouse) TakeAllProducts(productID uint) uint {
-	w.mu.Lock()
-	c, find := w.prodcutsCount[productID]
+	log.Infof("Start add prodct PID: %v count: %v", productID, count)
+	c, find := w.prodcutsCount.Load(productID)
 	if !find {
-		return 0
+		w.prodcutsCount.Store(productID, make(chan uint8)) 
+		c, _ = w.prodcutsCount.Load(productID)
 	}
 
-	defer func() {
-		w.prodcutsCount[productID] = 0
-		w.mu.Unlock()
-	}()
+	cuint := c.(chan uint8)
+	for i := uint(0); i < count; i++ {
+		cuint <- 1
+	}
+	log.Infof("Product added")
+}
+
+func (w *Warehouse) TakeProduct(productID uint ) <- chan uint8 {
+	log.Infof("Start take product %v", productID)
+	c := w.getChanelWhenCreated(productID)
+	log.Infof("return taked products")
+	return c
+}
+
+func (w *Warehouse) getChanelWhenCreated(productID uint) chan uint8 {
+	var c chan uint8
+	created := false
+
+	for !created {
+		if _c, find := w.prodcutsCount.Load(productID); find {
+			c = _c.(chan uint8)
+			created = true
+		}
+	}
 
 	return c
 }

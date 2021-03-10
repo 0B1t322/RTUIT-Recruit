@@ -5,7 +5,6 @@
 return a json purchase according to id in path
 if not find return 404 code and empty body
 if success return code 200
-require a Authorization header with key
 ### Example
 /purchases/1/1
 ```json
@@ -38,7 +37,6 @@ require a Authorization header with key
 return all purchases for uid
 if not find any return code 404
 if success return code 200
-require a Authorization header with key
 ### Example
 /purchases/1
 ```json
@@ -94,7 +92,7 @@ require a Authorization header with key
 ## POST /purchases/:uid
 Add to db a purchases with uid in path
 if add return code 201 and uint id of added purchase
-require a Authorization header with key
+require a Authorization header with key if token not found return 401
 if count bigger than count of product or zero return 401
 don't reduce a count of product make this from shops api
 ### Example
@@ -116,7 +114,6 @@ answer:
 Delete a purchase with id in path
 if not found purchase with this id return code 404
 If success retorn code 200
-require a Authorization header with key
 ### Example
 /purchases/1/1
 

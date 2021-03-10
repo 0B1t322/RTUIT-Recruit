@@ -15,8 +15,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/jinzhu/copier"
-
 	m "github.com/0B1t322/RTUIT-Recruit/pkg/models/shop"
 
 	"github.com/0B1t322/RTUIT-Recruit/service.factory/hash"
@@ -40,10 +38,23 @@ func NewDelivary(
 	UpdateTime 	time.Duration,
 	DeliverTime	time.Duration,
 ) *Delivery {
+
+	dests := make(map[uint]hash.HashUint)
+
+	var keys []uint
+
+	for productID := range productsID {
+		keys = append(keys, productID)
+	}
+
+	for _, key := range keys {
+		dests[key] = make(hash.HashUint)
+	}
+
 	return &Delivery{
 		ShopNetwork: ShopNetwork,
 		UpdateTime: UpdateTime,
-		dests: make(map[uint]hash.HashUint),
+		dests: dests,
 		DeliverTime: DeliverTime,
 	}
 }
@@ -82,16 +93,14 @@ func (d *Delivery) updateShops() {
 		}
 	}
 
+	// TODO delete not find shops
 	d.mu.RLock()
 	for _, shop := range shops {
 		for _, shopProduct := range shop.ShopProducts {
 			h, find := d.dests[shopProduct.ProductID]
-			if !find {
-				d.dests[shopProduct.ProductID] = make(hash.HashUint)
-				h = d.dests[shopProduct.ProductID]
+			if find {
+				h.Add(shopProduct.ShopID)
 			}
-
-			h.Add(shopProduct.ShopID)
 		}
 	}
 	d.mu.RUnlock()
@@ -102,16 +111,8 @@ func (d *Delivery) Deliver(w Warehouser) {
 	timer := time.NewTimer(d.DeliverTime)
 	<- timer.C
 	log.Infoln("Start deliver")
-	var _dest map[uint]hash.HashUint
 	d.mu.Lock()
-	log.Infoln("Start copy")
-	if err := copier.Copy(&_dest, &d.dests); err != nil {
-		log.Errorf("Error on copy %v\n", err)
-	}
-	log.Infoln("End copy")
-	d.mu.Unlock()
-
-	for PID, h := range _dest {
+	for PID, h := range d.dests {
 		var shopsID []uint
 		shopsID = h.GetKeys()
 		for _, shopID := range shopsID {
@@ -120,6 +121,7 @@ func (d *Delivery) Deliver(w Warehouser) {
 		}
 
 	}
+	d.mu.Unlock()
 	log.Infoln("End deliver")
 }
 
@@ -129,7 +131,7 @@ func (d *Delivery) deliver(PID, SID uint, w Warehouser) {
 	case takeCount := <- w.TakeProduct(PID):
 		log.Infof("Take count: %v\n", takeCount)
 		d.deliveryToShop(PID, SID, takeCount, w)
-	case <- time.After(time.Second):
+	case <- time.After(10*time.Millisecond):
 		log.Infoln("Timeout")
 		return
 	}

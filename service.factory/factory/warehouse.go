@@ -36,7 +36,7 @@ func (w *Warehouse) AddProduct(productID, count uint) {
 	log.Infof("Product added")
 }
 
-func (w *Warehouse) TakeProduct(productID uint ) <- chan uint8 {
+func (w *Warehouse) TakeProduct( productID uint ) <- chan uint8 {
 	log.Infof("Start take product %v", productID)
 	c := w.getChanelWhenCreated(productID)
 	log.Infof("return taked products")
@@ -46,7 +46,6 @@ func (w *Warehouse) TakeProduct(productID uint ) <- chan uint8 {
 func (w *Warehouse) getChanelWhenCreated(productID uint) chan uint8 {
 	var c chan uint8
 	created := false
-
 	for !created {
 		if _c, find := w.prodcutsCount.Load(productID); find {
 			c = _c.(chan uint8)

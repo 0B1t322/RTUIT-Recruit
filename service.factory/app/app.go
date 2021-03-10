@@ -1,44 +1,31 @@
 package app
 
 import (
-	"github.com/0B1t322/RTUIT-Recruit/pkg/app"
 	"github.com/0B1t322/RTUIT-Recruit/service.factory/factory"
 )
 
 type App struct {
-	factory		factory.Factorer
-	delivery	factory.Deliverer
-	warehouser	factory.Warehouser
-}
-
-func New(
-	factory		factory.Factorer,
-	delivery	factory.Deliverer,
-	warehouser	factory.Warehouser,
-) app.App {
-	return &App{
-		factory: factory,
-		delivery: delivery,
-		warehouser: warehouser,
-	}
+	Factory		factory.Factorer
+	Delivery	factory.Deliverer
+	Warehouser	factory.Warehouser
 }
 
 func (a *App) Start() error {
 	go func() {
 		for {
-			a.factory.MakeProducts(a.warehouser)
+			a.Factory.MakeProducts(a.Warehouser)
 		}
 	}()
 
 	go func() {
 		for {
-			a.delivery.UpdateShops()
+			a.Delivery.UpdateShops()
 		}
 	}()
 
 	go func() {
 		for {
-			a.delivery.Deliver(a.warehouser)
+			a.Delivery.Deliver(a.Warehouser)
 		}
 	}()
 

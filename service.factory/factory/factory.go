@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var productsID chan uint
 
 type ProductCreater interface {
 	Create(*product.Product) error
@@ -41,8 +42,9 @@ func NewFactory(
 		productPerCap: ProductPerCap,
 		products: prodcuts,
 	}
-
+	productsID = make(chan uint, len(prodcuts))
 	factory.createProducts(p)
+	close(productsID)
 
 	return factory
 }
@@ -53,6 +55,7 @@ func (f *Factory) createProducts(pc ProductCreater) {
 			logError("createProducts", err)
 		} else {
 			f.products[i] = p
+			productsID <- p.ID
 		}
 	}
 	log.Infof("Products: %v", f.products)

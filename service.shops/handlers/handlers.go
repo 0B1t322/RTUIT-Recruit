@@ -111,7 +111,11 @@ func (sp *ShopHandler) Buy(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte(err.Error()))
 			return
-		}else {
+		} else if err == ErrConnectToPurchases { 
+			w.WriteHeader(http.StatusBadGateway)
+			w.Write([]byte(err.Error()))
+			return
+		} else {
 			logAndWriteAboutInternalError(w, err, "Buy")
 			return
 		}

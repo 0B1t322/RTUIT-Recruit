@@ -20,39 +20,59 @@ services:
     container_name: service.purchases
     command: 
       "./main"
-    ports: 
-      - 8081:8081
+    expose: 
+      - 8081
     depends_on: 
       - db
     networks: 
       - database
+      - proxy
   service.shops:
     image: 0b1t322/service.shops
     container_name: service.shops
     command: 
       "./main"
-    ports: 
-      - "8082:8082"
+    expose: 
+      - 8082
     depends_on: 
       - db
       - service.purchases
     networks: 
       - database
+      - proxy
   service.factory:
     image: 0b1t322/service.factory
     container_name: service.factory
     command: 
       "./main"
-    ports: 
-      - 8083:8083
     depends_on: 
       - service.shops
       - db
     networks: 
     - database
+    - proxy
+    volumes: 
+      - ./config.json:/go/src/app/config.json
+  nginx:
+    image: nginx
+    container_name: nginx
+    volumes:
+    - ./reverse_proxy.conf:/etc/nginx/conf.d/default.conf
+    ports:
+    - 8084:8084
+    networks: 
+      - proxy
+    depends_on: 
+    -  service.shops
+    -  service.purchases
+    links: 
+    -  service.shops
+    -  service.purchases
 
 networks: 
   database:
+    driver: "bridge"
+  proxy:
     driver: "bridge"
 
 volumes: 

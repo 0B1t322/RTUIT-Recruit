@@ -13,7 +13,7 @@ const DBName = "recruit?parseTime=true"
 var DBManager *db.Manager
 
 func init() {
-	DBManager = db.NewManager("root", "root", "db:3306", 20*time.Second)
+	DBManager = db.NewManager("root", "root", "db:3306", time.Minute)
 
 	DB, err := DBManager.OpenDataBase(DBName)
 	if err != nil {

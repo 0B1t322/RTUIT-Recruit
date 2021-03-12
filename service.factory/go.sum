@@ -1,6 +1,9 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/0B1t322/RTUIT-Recruit v0.1.25 h1:6zglmz2o8MMgPcLOLKVYL0dA1LfcFYcpjbOfMXwqqdc=
 github.com/0B1t322/RTUIT-Recruit v0.1.25/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
+github.com/0B1t322/RTUIT-Recruit v0.1.26 h1:XjojOU5753Q4O27rZ/C31+5BxfQG2xU2N1y6lGRJz90=
+github.com/0B1t322/RTUIT-Recruit v0.1.26/go.mod h1:FjdT2v6yiAlHkhVXV3KUrQHrd0kb4BXKiQWrpX7ce94=
+github.com/0B1t322/RTUIT-Recruit/service.factory v0.0.0-20210311170458-1da7b3cd1664/go.mod h1:exdDI3MLnSY31nJNCp/22wF0WRX0EJX23o1yYPMyfLU=
 github.com/0B1t322/distanceLearningWebSite v0.0.0-20210211160901-f01e587d9046 h1:oTfB4JbgCzc7pUgZCbdKBbWcXYQqpaPlCQrQMeJuarY=
 github.com/0B1t322/distanceLearningWebSite v0.0.0-20210211160901-f01e587d9046/go.mod h1:jFy4y45c6TzzyDP9IxaEIJzlUZVyLRbWCndsx0r7tkU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=

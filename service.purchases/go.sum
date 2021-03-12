@@ -1,6 +1,10 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/0B1t322/RTUIT-Recruit v0.1.24 h1:TYDY/ml1gLqO/MYFB1h4vHoQ3USTWfiFC9kYuvmKC/8=
 github.com/0B1t322/RTUIT-Recruit v0.1.24/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
+github.com/0B1t322/RTUIT-Recruit v0.1.25/go.mod h1:IR1wGdPmBBOhFRIbsXOjZvUhEHbdfEtUrSemw9B8Pp8=
+github.com/0B1t322/RTUIT-Recruit v0.1.26 h1:XjojOU5753Q4O27rZ/C31+5BxfQG2xU2N1y6lGRJz90=
+github.com/0B1t322/RTUIT-Recruit v0.1.26/go.mod h1:FjdT2v6yiAlHkhVXV3KUrQHrd0kb4BXKiQWrpX7ce94=
+github.com/0B1t322/RTUIT-Recruit/service.factory v0.0.0-20210311170458-1da7b3cd1664/go.mod h1:exdDI3MLnSY31nJNCp/22wF0WRX0EJX23o1yYPMyfLU=
 github.com/0B1t322/distanceLearningWebSite v0.0.0-20210211160901-f01e587d9046 h1:oTfB4JbgCzc7pUgZCbdKBbWcXYQqpaPlCQrQMeJuarY=
 github.com/0B1t322/distanceLearningWebSite v0.0.0-20210211160901-f01e587d9046/go.mod h1:jFy4y45c6TzzyDP9IxaEIJzlUZVyLRbWCndsx0r7tkU=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
@@ -40,6 +44,7 @@ github.com/google/go-cmp v0.5.0/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/uuid v1.1.2/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/gorilla/mux v1.8.0 h1:i40aqfkR1h2SlN9hojwV5ZA91wcXFOvkdNIeFDP5koI=
 github.com/gorilla/mux v1.8.0/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB71So=
+github.com/jinzhu/copier v0.2.8/go.mod h1:24xnZezI2Yqac9J61UC6/dG/k76ttpq0DdJI3QmUvro=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.1.1 h1:g39TucaRWyV3dwDO++eEc6qf8TVIQ/Da48WmqjZ3i7E=

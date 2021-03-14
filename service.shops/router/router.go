@@ -16,9 +16,7 @@ func New(h h.ShopHandler) *mux.Router {
 	// Buy product
 	r.Handle(
 		"/shops/{id:[0-9]+}/{pid:[0-9]+}", 
-		middlewares.CheckBodyIfEmpty(
 			http.HandlerFunc(h.Buy),
-		),
 	).Methods("PUT")
 
 	// Check purchases
@@ -48,11 +46,9 @@ func New(h h.ShopHandler) *mux.Router {
 	r.Handle(
 			"/shops/", 
 			middlewares.CheckTokenIfFromService(
-				middlewares.CheckBodyIfEmpty(
 					http.HandlerFunc(
 						h.CreateShop,
 					),
-				),
 			),
 	).Methods("POST")
 	

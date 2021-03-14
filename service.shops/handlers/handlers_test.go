@@ -32,7 +32,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	const purNet = "http://localhost:8081"
+	const purNet = "http://localhost:8084"
 
 	route = router.New(h.New(db, purNet))
 }
@@ -70,8 +70,6 @@ func TestFunc_Buy(t *testing.T) {
 		t.FailNow()
 	}
 
-	
-
 }
 
 func TestFunc_Buy_CountNull(t *testing.T) {
@@ -102,7 +100,7 @@ func TestFunc_Buy_CountNull(t *testing.T) {
 
 	route.ServeHTTP(w, req)
 
-	if w.Code != http.StatusBadRequest{
+	if w.Code != http.StatusBadRequest {
 		t.Log(w.Code)
 		t.Log(w.Body.String())
 		t.FailNow()
@@ -137,7 +135,7 @@ func TestFunc_Buy_CountNeg(t *testing.T) {
 
 	route.ServeHTTP(w, req)
 
-	if w.Code != http.StatusBadRequest{
+	if w.Code != http.StatusBadRequest {
 		t.Log(w.Code)
 		t.Log(w.Body.String())
 		t.FailNow()
@@ -145,7 +143,6 @@ func TestFunc_Buy_CountNeg(t *testing.T) {
 
 	t.Log(w.Body.String())
 }
-
 
 func TestFunc_Buy_NotFound_InvalidShopID(t *testing.T) {
 	p := &pm.Purchase{
@@ -297,7 +294,7 @@ func TestFunc_Get_NotFound(t *testing.T) {
 
 	route.ServeHTTP(w, r)
 
-	if w.Code != http.StatusNotFound{
+	if w.Code != http.StatusNotFound {
 		t.Log(w.Code)
 		t.FailNow()
 	}
@@ -380,7 +377,6 @@ func TestFunc_AddProduct_BadRequest(t *testing.T) {
 	}
 }
 
-
 func TestFunc_AddCount(t *testing.T) {
 	r, err := http.NewRequest("PUT", "/shops/1/3/2", nil)
 	if err != nil {
@@ -413,8 +409,8 @@ func setAuthHeader(req *http.Request) {
 
 func TestFunc_CreateShop(t *testing.T) {
 	s := &shop.ShopInfo{
-		Adress: "some_adress",
-		Name: "some_shop",
+		Adress:      "some_adress",
+		Name:        "some_shop1",
 		PhoneNubmer: "8991234567",
 	}
 	data, err := json.Marshal(s)
@@ -438,6 +434,7 @@ func TestFunc_CreateShop(t *testing.T) {
 
 	if w.Code != http.StatusOK {
 		t.Log(w.Code)
+		t.Log(w.Body.String())
 		t.FailNow()
 	}
 
@@ -446,8 +443,8 @@ func TestFunc_CreateShop(t *testing.T) {
 
 func TestFunc_CreateShop_BadReq(t *testing.T) {
 	s := &shop.ShopInfo{
-		Adress: "some_adress",
-		Name: "some_shop",
+		Adress:      "some_adress",
+		Name:        "some_shop",
 		PhoneNubmer: "8991234567",
 	}
 	data, err := json.Marshal(s)

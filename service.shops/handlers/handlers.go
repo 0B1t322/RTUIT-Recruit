@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"io"
 	"bytes"
 	"crypto/sha512"
 	"encoding/hex"
@@ -94,7 +95,11 @@ func (sp *ShopHandler) Buy(w http.ResponseWriter, r *http.Request) {
 	p := &pm.Purchase{}
 
 	d := json.NewDecoder(r.Body)
-	if err := d.Decode(p); err != nil {
+	if err := d.Decode(p); err == io.EOF {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "Body is null")
+		return
+	} else if err != nil {
 		logAndWriteAboutInternalError(w, err, "Buy")
 		return
 	}
@@ -225,7 +230,12 @@ func (sh *ShopHandler) CreateShop(w http.ResponseWriter, r *http.Request) {
 	s := m.ShopInfo{}
 
 	d := json.NewDecoder(r.Body)
-	if err := d.Decode(&s); err != nil {
+
+	if err := d.Decode(&s); err == io.EOF{
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "Body is null")
+		return
+	} else if err != nil {
 		logAndWriteAboutInternalError(w, err, "CreateShop")
 		return
 	}

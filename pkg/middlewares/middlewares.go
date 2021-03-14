@@ -124,7 +124,15 @@ func CheckTokenIfFromService(next http.Handler) http.Handler {
 
 func CheckBodyIfEmpty(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if _, err := ioutil.ReadAll(r.Body); err == io.EOF {
+		body, err := r.GetBody()
+		if err != nil {
+			log.WithFields(log.Fields{
+				"package": "Middlewares",
+				"err": err.Error(),
+			}).Error()
+		}
+		
+		if _, err := ioutil.ReadAll(body); err == io.EOF {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, "Body is null")
 			return

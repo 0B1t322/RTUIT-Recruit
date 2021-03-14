@@ -14,7 +14,12 @@ func New(h h.ShopHandler) *mux.Router {
 	r.HandleFunc("/shops/{id:[0-9]+}", h.Get).Methods("GET")
 
 	// Buy product
-	r.HandleFunc("/shops/{id:[0-9]+}/{pid:[0-9]+}", h.Buy).Methods("PUT")
+	r.Handle(
+		"/shops/{id:[0-9]+}/{pid:[0-9]+}", 
+		middlewares.CheckBodyIfEmpty(
+			http.HandlerFunc(h.Buy),
+		),
+	).Methods("PUT")
 
 	// Check purchases
 	r.HandleFunc("/shops/purchases/{uid:[0-9]+}", h.GetPurchases).Methods("GET")
@@ -43,8 +48,10 @@ func New(h h.ShopHandler) *mux.Router {
 	r.Handle(
 			"/shops/", 
 			middlewares.CheckTokenIfFromService(
-				http.HandlerFunc(
-					h.CreateShop,
+				middlewares.CheckBodyIfEmpty(
+					http.HandlerFunc(
+						h.CreateShop,
+					),
 				),
 			),
 	).Methods("POST")

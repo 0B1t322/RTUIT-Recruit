@@ -98,6 +98,12 @@ func (sp *ShopHandler) Buy(w http.ResponseWriter, r *http.Request) {
 		logAndWriteAboutInternalError(w, err, "Buy")
 		return
 	}
+
+	if p.UID == 0 || p.Count == 0 || p.Payment == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Incorrect body")
+		return
+	}
 	
 	p.ShopID = id
 	p.ProductID = productID
@@ -221,6 +227,12 @@ func (sh *ShopHandler) CreateShop(w http.ResponseWriter, r *http.Request) {
 	d := json.NewDecoder(r.Body)
 	if err := d.Decode(&s); err != nil {
 		logAndWriteAboutInternalError(w, err, "CreateShop")
+		return
+	}
+
+	if s.Name == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Incorrect body")
 		return
 	}
 

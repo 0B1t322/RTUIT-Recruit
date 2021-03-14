@@ -5,6 +5,9 @@ import (
 	"crypto/sha512"
 	"encoding/hex"
 	"flag"
+	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
 	"regexp"
 	_ "strings"
@@ -116,5 +119,19 @@ func CheckTokenIfFromService(next http.Handler) http.Handler {
 		}
 		
 		next.ServeHTTP(w,r)
+	})
+}
+
+func CheckBodyIfEmpty(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if _, err := ioutil.ReadAll(r.Body); err == io.EOF {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprint(w, "Body is null")
+			return
+		} else if err != nil {
+			log.Errorf("Err in middlewares %v", err)
+			return
+		}
+		next.ServeHTTP(w, r)
 	})
 }

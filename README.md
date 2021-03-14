@@ -55,6 +55,9 @@
     "delivery_time": "2s"
 }
 ```
+
+По умолчанию nginx прослушивает порт 8084
+
 ## Запуск
 для запуска необходимо
 1. [Docker]("https://www.docker.com")
@@ -77,7 +80,7 @@
 # API for level_2
 # service.purchases
 ---
-## GET /purchases/:uid/:id 
+## GET /purchases/{uid}/{id} 
 return a json purchase according to id in path
 if not find return 404 code and empty body
 if success return code 200
@@ -109,7 +112,7 @@ if success return code 200
     }
 ```
     
-## GET /purchases/:uid
+## GET /purchases/{uid}
 return all purchases for uid
 if not find any return code 404
 if success return code 200
@@ -165,7 +168,7 @@ if success return code 200
         }
     ]
 ```
-## POST /purchases/:uid
+## POST /purchases/{uid}
 Add to db a purchases with uid in path
 if add return code 201 and uint id of added purchase
 require a Authorization header with key if token not found return 401
@@ -186,7 +189,7 @@ answer:
 ```
 1
 ```
-## DELETE /purchases/:uid/:id
+## DELETE /purchases/{uid}/{id}
 Delete a purchase with id in path
 if not found purchase with this id return code 404
 If success retorn code 200
@@ -197,7 +200,7 @@ If success retorn code 200
 # service.shops
 
 
-## GET /shops/:id
+## GET /shops/{id}
 return a information abou shop
 if not find shop with this id return 404
 ### Example
@@ -226,10 +229,12 @@ answer:
     ]
 }
 ```
-## PUT /shops/:id/:pid
+## PUT /shops/{id}/{pid}
 buy product
 if shop or product not found return 404
 if success returb code 200
+if not found uid or count or payment in body return 400
+if body empty return 400
 ### Example
 /shops/1/1
 req body:
@@ -240,7 +245,7 @@ req body:
     "payment": "cash"
 }
 ```
-## GET /shops/purchases/:uid
+## GET /shops/purchases/{uid}
 return all purchases for user
 if not find return 404
 ### Example
@@ -320,7 +325,7 @@ answer:
 ]
 ```
 
-## PUT /shops/:id/:pid/:count
+## PUT /shops/{id}/{pid}/{count}
 add count to product in shop
 if success return 200 
 if don't find a product or shop return 404
@@ -328,7 +333,7 @@ require a header Authirization with token
 ### Example
 /shops/1/1/2
 
-## POST /shops/:id/:pid
+## POST /shops/{id}/{pid}
 add product to shop
 if don't find product or shop return 404
 require a header Authirization with token
@@ -382,9 +387,10 @@ return all shops
 
 ## POST /shops/
 Create shop
-if shop with this name exisr return 400
+if shop with this name exist return 400
 if create return status 200
-
+if not found name in body return 400
+if body empty return 400
 ### Example
 /shops/
 body:

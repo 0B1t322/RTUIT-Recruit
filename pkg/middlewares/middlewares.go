@@ -131,8 +131,9 @@ func CheckBodyIfEmpty(next http.Handler) http.Handler {
 				"err": err.Error(),
 			}).Error()
 		}
-		
-		if _, err := ioutil.ReadAll(body); err == io.EOF {
+
+		data, err := ioutil.ReadAll(body)
+		if err == io.EOF {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprint(w, "Body is null")
 			return
@@ -140,6 +141,13 @@ func CheckBodyIfEmpty(next http.Handler) http.Handler {
 			log.Errorf("Err in middlewares %v", err)
 			return
 		}
+
+		if len(data) == 0 {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprint(w, "Body is null")
+			return
+		}
+
 		next.ServeHTTP(w, r)
 	})
 }

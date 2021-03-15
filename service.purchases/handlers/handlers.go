@@ -1,11 +1,14 @@
 package handlers
 
 import (
-	sc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/shop"
 	"encoding/json"
+	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
+
+	sc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/shop"
 
 	pc "github.com/0B1t322/RTUIT-Recruit/pkg/controllers/purchase"
 	"github.com/0B1t322/RTUIT-Recruit/pkg/models/purchase"
@@ -197,7 +200,11 @@ func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 
 	p := &purchase.Purchase{}
 
-	if err := d.Decode(p); err != nil {
+	if err := d.Decode(p); err == io.EOF {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "Body is null")
+		return
+	} else if err != nil {
 		logAndWriteAboutInternalError(w, err, "Add")
 		return
 	}

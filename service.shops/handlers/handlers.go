@@ -53,7 +53,15 @@ func logAndWriteAboutInternalError(w http.ResponseWriter, err error, m string) {
 
 	w.WriteHeader(http.StatusInternalServerError)
 }
-
+// Get
+// @Summary Get a shop
+// @Description get shop by ID
+// @ID get-shop-by-int
+// @Produce  json
+// @Param   id      path   int     true  "ID of the shop"
+// @Success 200 {object} m.Shop
+// @Failure 404 {string} string "Shop don't find"
+// @Router /shops/{id} [get]
 func (sp *ShopHandler) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -79,13 +87,30 @@ func (sp *ShopHandler) Get(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-// Buy buy a product
-// in body should be:
-// 	uid
-// 	payment
-// 	count
-// TODO refactor because we can buy only products in this shop
-// and sub them count
+type buyBody struct {
+	UID 		uint 	`json:"uid"`
+	Count		uint	`json:"count"`
+	Payment		string	`json:"cash"`
+}
+
+// Buy
+// @Summary Buy product
+// @Description buy product in shop by ID
+// @ID buy-product-in-shop
+// @Accept	json
+// @Produce  json
+// @Param   id      path   int     true  "ID of the shop"
+// @Param   pid      path   int     true  "ID of the product"
+// @Param   purchase_info body buyBody true "UID count and type of payment"
+// @Success 200 {object} m.Shop
+// @Failure 404 {string} string "Shop don't find"
+// @Failure 404 {string} string "Product don't find"
+// @Failure 400 {string} string "Incorrect body"
+// @Failure 400 {string} string "Count is null"
+// @Failure 400 {string} string "NegCount"
+// @Failure 502 {string} string "Faield to connect service purchases"
+// @Failure 404 {string} string "Body is null"
+// @Router /shops/{id}/{pid} [put]
 func (sp *ShopHandler) Buy(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -135,31 +160,39 @@ func (sp *ShopHandler) Buy(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-func (sh *ShopHandler) GetPurchases(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
+// func (sh *ShopHandler) GetPurchases(w http.ResponseWriter, r *http.Request) {
+// 	vars := mux.Vars(r)
 
-	uid := getUID(vars)
+// 	uid := getUID(vars)
 
-	ps, err := sh.getAllPurchases(uid)
-	if err == pc.ErrNotFound {
-		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(err.Error()))
-		return
-	} else if err != nil {
-		logAndWriteAboutInternalError(w, err, "GetPurchases")
-		return
-	}
+// 	ps, err := sh.getAllPurchases(uid)
+// 	if err == pc.ErrNotFound {
+// 		w.WriteHeader(http.StatusNotFound)
+// 		w.Write([]byte(err.Error()))
+// 		return
+// 	} else if err != nil {
+// 		logAndWriteAboutInternalError(w, err, "GetPurchases")
+// 		return
+// 	}
 
-	data, err := json.Marshal(ps)
-	if err != nil {
-		logAndWriteAboutInternalError(w, err, "GetPurchases")
-		return
-	}
+// 	data, err := json.Marshal(ps)
+// 	if err != nil {
+// 		logAndWriteAboutInternalError(w, err, "GetPurchases")
+// 		return
+// 	}
 
-	w.Write(data)
-	w.WriteHeader(http.StatusOK)
-}
+// 	w.Write(data)
+// 	w.WriteHeader(http.StatusOK)
+// }
 
+// GetAll
+// @Summary GetAll shops
+// @Description get all shops
+// @ID get-all-shops
+// @Produce  json
+// @Success 200 {array} m.Shop
+// @Failure 404 {string} string "Shop don't find"
+// @Router /shops/ [get]
 func (sh *ShopHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	shops, err := sh.c.GetAll()
 
@@ -181,6 +214,19 @@ func (sh *ShopHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+// AddProduct
+// @Summary Add a product to the shop
+// @Description Add product by id to the shop by id
+// @ID add-product-to-shop-by-id
+// @Produce  json
+// @Param   token header string true "Authirization Header with hashed secret_key looks like: Token fhdjfho23h4ore"
+// @Param   id      path   int     true  "ID of the shop"
+// @Param   pid      path   int     true  "ID of the product"
+// @Success 200
+// @Failure 404 {string} string "Shop don't find"
+// @Failure 404 {string} string "Product don't find"
+// @Failure 403
+// @Router /shops/{id}/{pid} [post]
 func (sh *ShopHandler) AddProduct(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -208,6 +254,18 @@ func (sh *ShopHandler) AddProduct(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// AddCount
+// @Summary Add a count of the product
+// @Description Add count of the product
+// @ID add-count-of-product-to-shop-by-id
+// @Produce  json
+// @Param   token header string true "Authirization Header with hashed secret_key looks like: Token fhdjfho23h4ore"
+// @Param   id      path   int     true  "ID of the shop"
+// @Param   pid      path   int     true  "ID of the product"
+// @Param   count      path   int     true  "ID of the product"
+// @Success 200
+// @Failure 400 {string} string "Product don't find"
+// @Router /shops/{id}/{pid}/{count} [put]
 func (sh *ShopHandler) AddCount(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -226,6 +284,19 @@ func (sh *ShopHandler) AddCount(w http.ResponseWriter, r *http.Request) {
 
 }
 
+
+// CreateShop
+// @Summary Create shop
+// @Description Create a shop
+// @ID create-shop
+// @Accept json
+// @Produce  json
+// @Param   shop_info body m.ShopInfo true "Information about shop"
+// @Success 200
+// @Failure 400 {string} string "Shop exist"
+// @Failure 400 {string} string "Incorrect body"
+// @Failure 400 {string} string "body is null"
+// @Router /shops/ [post]
 func (sh *ShopHandler) CreateShop(w http.ResponseWriter, r *http.Request) {
 	s := m.ShopInfo{}
 

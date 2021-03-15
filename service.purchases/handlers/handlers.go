@@ -43,36 +43,18 @@ func logAndWriteAboutInternalError(w http.ResponseWriter, err error, m string) {
 	w.WriteHeader(http.StatusInternalServerError)
 }
 
-// Get return a json purchase according to id in path
-//
-// if not find purchase fot uid return 404 code and empy body
-// 
-// 	Answer example:
-// {
-//     "id": 1,
-//     "uid": 1,
-//     "shop_id": 9,
-//     "shop": {
-//         "ID": 9,
-//         "name": "cool_shop",
-//         "adress": "adress_1",
-//         "phone_number": "89991234567"
-//     },
-//     "buy_date": "2021-02-27T18:32:47.959Z",
-//     "product_id": 29,
-//     "product": {
-//         "ID": 29,
-//         "name": "phone_1",
-//         "description": "cool phone",
-//         "cost": 13000,
-//         "category": "Phone"
-//     },
-//     "payment": "",
-//     "count": 1
-// }
+// Get
+// @Summary Get purchases
+// @Description get purchase by id
+// @ID get-purchase-by-id
+// @Produce  json
+// @Param   uid      path   int     true  "ID of the user"
+// @Param   id      path   int     true  "ID of the purchase"
+// @Success 200 {object} purchase.Purchase
+// @Failure 404 {string} string "Not found"
+// @Router /purchases/{uid}/{id} [get]
 func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-
 	_id, _ := strconv.ParseUint(vars["id"], 10, 64)
 	_uid, _ := strconv.ParseUint(vars["uid"], 10, 64)
 	
@@ -102,58 +84,16 @@ func (ph *PurchaseHandler) Get(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 	w.WriteHeader(http.StatusOK)
 }
-// GetAll return a json mass of purchases for uid in path
-// 
-// if not find purchase for uid return code 404
-// Success return code 200
-//
-// Answer example:
-// [
-//     {
-//         "id": 1,
-//         "uid": 1,
-//         "shop_id": 9,
-//         "shop": {
-//             "ID": 9,
-//             "name": "cool_shop",
-//             "adress": "adress_1",
-//             "phone_number": "89991244567"
-//         },
-//         "buy_date": "2021-02-27T18:52:20.059Z",
-//         "product_id": 29,
-//         "product": {
-//             "ID": 29,
-//             "name": "phone_1",
-//             "description": "cool phone",
-//             "cost": 13000,
-//             "category": "Phone"
-//         },
-//         "payment": "",
-//         "count": 5
-//     },
-//     {
-//         "id": 2,
-//         "uid": 1,
-//         "shop_id": 9,
-//         "shop": {
-//             "ID": 9,
-//             "name": "cool_shop",
-//             "adress": "adress_1",
-//             "phone_number": "89991244567"
-//         },
-//         "buy_date": "2021-02-27T18:52:26.817Z",
-//         "product_id": 29,
-//         "product": {
-//             "ID": 29,
-//             "name": "phone_1",
-//             "description": "cool phone",
-//             "cost": 13000,
-//             "category": "Phone"
-//         },
-//         "payment": "",
-//         "count": 1
-//     }
-// ]
+
+// GetAll
+// @Summary Get All purchases
+// @Description get All purchase by uid
+// @ID get-all-purchase-by-uid
+// @Produce  json
+// @Param   uid      path   int     true  "ID of the user"
+// @Success 200 {array} purchase.Purchase
+// @Failure 404 {string} string "Not found"
+// @Router /purchases/{uid} [get]
 func (ph* PurchaseHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -179,17 +119,28 @@ func (ph* PurchaseHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-// Add to db a purchases with uid in path
-// 
-// if add return code 201 and uint id of added purchase
-// 
-// body example:
-//	{
-//		"product_id": 29,
-//		"shop_id": 9,
-//		"cost": 999,
-//		"count": 1
-//	}
+type addBody struct {
+	ProductID uint 	`json:"product_id"`
+	ShopID uint 	`json:"shop_id"`
+	Count uint 		`json:"count"`
+	Payment string 	`json:"payment"`
+}
+
+// Add
+// @Summary Add purchase
+// @Description Add purchase
+// @ID add-purchase-to-uid
+// @Accept json
+// @Produce  json
+// @Param   uid      path   int     true  "ID of the user"
+// @Param   purchase body addBody true "purchase info"
+// @Success 201 {integer} integer "id of purchase"
+// @Failure 404 {string} string "Not found shop"
+// @Failure 404 {string} string "Not found product"
+// @Failure 400 {string} string "body is null"
+// @Failure 400 {string} string "NegCount"
+// @Failure 400 {string} string "count can't be null"
+// @Router /purchases/{uid} [post]
 func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
@@ -237,26 +188,15 @@ func (ph *PurchaseHandler) Add(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-// func Update(w http.ResponseWriter, r *http.Request) {
-// 	vars := mux.Vars(r)
-
-// 	id := vars["id"]
-
-// 	p, err := purchases.Get(id)
-// 	if err == purchases.ErrNotFound {
-// 		w.WriteHeader(http.StatusNotFound)
-// 		return
-// 	} else if err != nil {
-// 		logAndWriteAboutInternalError(w, err)
-// 		return
-// 	} 
-// }
-
-// Delete a purchase with id in path
-// 
-// if not found purchase with this id return code 404
-// 
-// If success retorn code 200
+// Delete
+// @Summary Delete purchase
+// @Description delete purchase for user by id
+// @ID delete-purchase-by-id
+// @Param   uid      path   int     true  "ID of the user"
+// @Param   id      path   int     true  "ID of the purchase"
+// @Success 200
+// @Failure 404 {string} string "Not found"
+// @Router /purchases/{uid}/{id} [delete]
 func (ph *PurchaseHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	

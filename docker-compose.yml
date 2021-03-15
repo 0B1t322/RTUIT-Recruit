@@ -53,6 +53,17 @@ services:
     - proxy
     volumes: 
       - ./config.json:/go/src/app/config.json
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger-ui
+    ports:
+      - "8001:8080"
+    volumes:
+      - ./docs:/usr/share/nginx/html/swagger
+    environment:
+      API_URL: swagger/swagger.yaml
+    networks: 
+      - proxy
   nginx:
     image: nginx
     container_name: nginx
@@ -65,9 +76,11 @@ services:
     depends_on: 
     -  service.shops
     -  service.purchases
+    -  swagger-ui
     links: 
     -  service.shops
     -  service.purchases
+    -  swagger-ui
 
 networks: 
   database:

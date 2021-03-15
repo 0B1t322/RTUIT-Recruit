@@ -1,0 +1,381 @@
+definitions:
+  handlers.addBody:
+    properties:
+      count:
+        type: integer
+      payment:
+        type: string
+      product_id:
+        type: integer
+      shop_id:
+        type: integer
+    type: object
+  handlers.buyBody:
+    properties:
+      cash:
+        type: string
+      count:
+        type: integer
+      uid:
+        type: integer
+    type: object
+  product.Product:
+    properties:
+      category:
+        type: string
+      cost:
+        type: number
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  purchase.Purchase:
+    properties:
+      buy_date:
+        type: string
+      cost:
+        type: integer
+      count:
+        type: integer
+      id:
+        type: integer
+      payment:
+        description: Payment can be cash/card
+        type: string
+      product:
+        $ref: '#/definitions/product.Product'
+      product_id:
+        type: integer
+      shop:
+        $ref: '#/definitions/shop.Shop'
+      shop_id:
+        type: integer
+      uid:
+        type: integer
+    type: object
+  shop.Shop:
+    properties:
+      adress:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phone_number:
+        type: string
+      shop_products:
+        description: here product count
+        items:
+          $ref: '#/definitions/shop.ShopProduct'
+        type: array
+    type: object
+  shop.ShopInfo:
+    properties:
+      adress:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      phone_number:
+        type: string
+    type: object
+  shop.ShopProduct:
+    properties:
+      count:
+        type: integer
+      product:
+        $ref: '#/definitions/product.Product'
+      product_id:
+        type: integer
+      shop_id:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /purchases/{uid}:
+    get:
+      description: get All purchase by uid
+      operationId: get-all-purchase-by-uid
+      parameters:
+      - description: ID of the user
+        in: path
+        name: uid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/purchase.Purchase'
+            type: array
+        "404":
+          description: Not found
+          schema:
+            type: string
+      summary: Get All purchases
+    post:
+      consumes:
+      - application/json
+      description: Add purchase
+      operationId: add-purchase-to-uid
+      parameters:
+      - description: ID of the user
+        in: path
+        name: uid
+        required: true
+        type: integer
+      - description: purchase info
+        in: body
+        name: purchase
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.addBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: id of purchase
+          schema:
+            type: integer
+        "400":
+          description: count can't be null
+          schema:
+            type: string
+        "404":
+          description: Not found product
+          schema:
+            type: string
+      summary: Add purchase
+  /purchases/{uid}/{id}:
+    delete:
+      description: delete purchase for user by id
+      operationId: delete-purchase-by-id
+      parameters:
+      - description: ID of the user
+        in: path
+        name: uid
+        required: true
+        type: integer
+      - description: ID of the purchase
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: ""
+        "404":
+          description: Not found
+          schema:
+            type: string
+      summary: Delete purchase
+    get:
+      description: get purchase by id
+      operationId: get-purchase-by-id
+      parameters:
+      - description: ID of the user
+        in: path
+        name: uid
+        required: true
+        type: integer
+      - description: ID of the purchase
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/purchase.Purchase'
+        "404":
+          description: Not found
+          schema:
+            type: string
+      summary: Get purchases
+  /shops/:
+    get:
+      description: get all shops
+      operationId: get-all-shops
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/shop.Shop'
+            type: array
+        "404":
+          description: Shop don't find
+          schema:
+            type: string
+      summary: GetAll shops
+    post:
+      consumes:
+      - application/json
+      description: Create a shop
+      operationId: create-shop
+      parameters:
+      - description: Information about shop
+        in: body
+        name: shop_info
+        required: true
+        schema:
+          $ref: '#/definitions/shop.ShopInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: body is null
+          schema:
+            type: string
+      summary: Create shop
+  /shops/{id}:
+    get:
+      description: get shop by ID
+      operationId: get-shop-by-int
+      parameters:
+      - description: ID of the shop
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/shop.Shop'
+        "404":
+          description: Shop don't find
+          schema:
+            type: string
+      summary: Get a shop
+  /shops/{id}/{pid}:
+    post:
+      description: Add product by id to the shop by id
+      operationId: add-product-to-shop-by-id
+      parameters:
+      - description: 'Authirization Header with hashed secret_key looks like: Token
+          fhdjfho23h4ore'
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: ID of the shop
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ID of the product
+        in: path
+        name: pid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "403":
+          description: ""
+        "404":
+          description: Product don't find
+          schema:
+            type: string
+      summary: Add a product to the shop
+    put:
+      consumes:
+      - application/json
+      description: buy product in shop by ID
+      operationId: buy-product-in-shop
+      parameters:
+      - description: ID of the shop
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ID of the product
+        in: path
+        name: pid
+        required: true
+        type: integer
+      - description: UID count and type of payment
+        in: body
+        name: purchase_info
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.buyBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/shop.Shop'
+        "400":
+          description: NegCount
+          schema:
+            type: string
+        "404":
+          description: Body is null
+          schema:
+            type: string
+        "502":
+          description: Faield to connect service purchases
+          schema:
+            type: string
+      summary: Buy product
+  /shops/{id}/{pid}/{count}:
+    put:
+      description: Add count of the product
+      operationId: add-count-of-product-to-shop-by-id
+      parameters:
+      - description: 'Authirization Header with hashed secret_key looks like: Token
+          fhdjfho23h4ore'
+        in: header
+        name: token
+        required: true
+        type: string
+      - description: ID of the shop
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: ID of the product
+        in: path
+        name: pid
+        required: true
+        type: integer
+      - description: ID of the product
+        in: path
+        name: count
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ""
+        "400":
+          description: Product don't find
+          schema:
+            type: string
+      summary: Add a count of the product
+swagger: "2.0"

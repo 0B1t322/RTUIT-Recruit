@@ -19,9 +19,6 @@ func New(h h.ShopHandler) *mux.Router {
 			http.HandlerFunc(h.Buy),
 	).Methods("PUT")
 
-	// Check purchases
-	r.HandleFunc("/shops/purchases/{uid:[0-9]+}", h.GetPurchases).Methods("GET")
-
 	// Add count product
 	// this method only for fabrics
 	r.Handle(

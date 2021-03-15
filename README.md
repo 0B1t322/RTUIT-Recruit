@@ -77,6 +77,8 @@
 1. [Golang 1.15](https://golang.org/dl/)
 
 
+Также по http://localhost:8081 доступен swaggerUI
+
 # API for level_2
 # service.purchases
 ---

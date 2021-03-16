@@ -20,7 +20,7 @@ func main() {
 		}).Panic()
 	}
 
-	a := app.New(DB, "8082", "http://nginx:8081")
+	a := app.New(DB, "8082", "http://nginx:8084")
 
 	log.Infoln("Starting server on :8082")
 	log.Info("Key is: " + middlewares.SecretKey)

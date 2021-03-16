@@ -90,7 +90,7 @@ func (sp *ShopHandler) Get(w http.ResponseWriter, r *http.Request) {
 type buyBody struct {
 	UID 		uint 	`json:"uid"`
 	Count		uint	`json:"count"`
-	Payment		string	`json:"cash"`
+	Payment		string	`json:"payment"`
 }
 
 // Buy
@@ -102,7 +102,7 @@ type buyBody struct {
 // @Param   id      path   int     true  "ID of the shop"
 // @Param   pid      path   int     true  "ID of the product"
 // @Param   purchase_info body buyBody true "UID count and type of payment"
-// @Success 200 {object} m.Shop
+// @Success 200
 // @Failure 404 {string} string "Shop don't find"
 // @Failure 404 {string} string "Product don't find"
 // @Failure 400 {string} string "Incorrect body"

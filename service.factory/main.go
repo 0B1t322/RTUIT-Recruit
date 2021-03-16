@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/0B1t322/RTUIT-Recruit/pkg/db"
 	"flag"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/0B1t322/RTUIT-Recruit/pkg/db"
 
 	"github.com/sirupsen/logrus"
 
@@ -49,7 +50,7 @@ func main() {
 
 	signal.Notify(done, os.Interrupt, syscall.SIGTERM)
 	select {
-	case <- done:
+	case <-done:
 		logrus.Infoln("Shuting down")
 		os.Exit(0)
 	}

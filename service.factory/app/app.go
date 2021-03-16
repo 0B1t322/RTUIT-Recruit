@@ -5,9 +5,9 @@ import (
 )
 
 type App struct {
-	Factory		factory.Factorer
-	Delivery	factory.Deliverer
-	Warehouser	factory.Warehouser
+	Factory    factory.Factorer
+	Delivery   factory.Deliverer
+	Warehouser factory.Warehouser
 }
 
 func (a *App) Start() error {

@@ -456,11 +456,11 @@ var doc = `{
         "handlers.buyBody": {
             "type": "object",
             "properties": {
-                "cash": {
-                    "type": "string"
-                },
                 "count": {
                     "type": "integer"
+                },
+                "payment": {
+                    "type": "string"
                 },
                 "uid": {
                     "type": "integer"

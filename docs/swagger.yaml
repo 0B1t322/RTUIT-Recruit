@@ -12,10 +12,10 @@ definitions:
     type: object
   handlers.buyBody:
     properties:
-      cash:
-        type: string
       count:
         type: integer
+      payment:
+        type: string
       uid:
         type: integer
     type: object
